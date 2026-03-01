@@ -1,4 +1,4 @@
-# C²FAB: Vector Causal Charge-Field Attention Bias
+# V-C²FAB: Vector Causal Charge-Field Attention Bias
 
 A novel, physics-inspired attention mechanism built for **Ministral-8B**, developed over the course of a 2-day hackathon.
 
