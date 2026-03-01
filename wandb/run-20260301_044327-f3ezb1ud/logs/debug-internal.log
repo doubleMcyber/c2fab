@@ -1,0 +1,12 @@
+{"time":"2026-03-01T04:43:31.107785-08:00","level":"INFO","msg":"stream: starting","core version":"0.25.0"}
+{"time":"2026-03-01T04:43:32.220589-08:00","level":"INFO","msg":"stream: created new stream","id":"f3ezb1ud"}
+{"time":"2026-03-01T04:43:32.220655-08:00","level":"INFO","msg":"handler: started","stream_id":"f3ezb1ud"}
+{"time":"2026-03-01T04:43:32.221504-08:00","level":"INFO","msg":"stream: started","id":"f3ezb1ud"}
+{"time":"2026-03-01T04:43:32.221528-08:00","level":"INFO","msg":"writer: started","stream_id":"f3ezb1ud"}
+{"time":"2026-03-01T04:43:32.22154-08:00","level":"INFO","msg":"sender: started","stream_id":"f3ezb1ud"}
+{"time":"2026-03-01T11:40:54.183525-08:00","level":"INFO","msg":"api: retrying error","error":"Post \"https://api.wandb.ai/files/marlonmoe-stanford-university/c2fab-hackathon/f3ezb1ud/file_stream\": read tcp 10.29.38.121:64553->35.186.228.49:443: read: can't assign requested address"}
+{"time":"2026-03-01T11:47:43.269277-08:00","level":"INFO","msg":"stream: closing","id":"f3ezb1ud"}
+{"time":"2026-03-01T11:47:44.274508-08:00","level":"INFO","msg":"fileTransfer: Close: file transfer manager closed"}
+{"time":"2026-03-01T11:47:44.489778-08:00","level":"INFO","msg":"handler: closed","stream_id":"f3ezb1ud"}
+{"time":"2026-03-01T11:47:44.490345-08:00","level":"INFO","msg":"sender: closed","stream_id":"f3ezb1ud"}
+{"time":"2026-03-01T11:47:44.490386-08:00","level":"INFO","msg":"stream: closed","id":"f3ezb1ud"}

@@ -1,0 +1,72 @@
+_wandb:
+    value:
+        cli_version: 0.25.0
+        e:
+            sjbrlm6isr4741eqofinbs79ox2yu25v:
+                apple:
+                    ecpuCores: 4
+                    gpuCores: 38
+                    memoryGb: 32
+                    name: Apple M2 Max
+                    pcpuCores: 8
+                    ramTotalBytes: "34359738368"
+                    swapTotalBytes: "26843545600"
+                codePath: src/train_overnight.py
+                codePathLocal: src/train_overnight.py
+                cpu_count: 12
+                cpu_count_logical: 12
+                disk:
+                    /:
+                        total: "994662584320"
+                        used: "740978515968"
+                email: marlonm@stanford.edu
+                executable: /Users/marlonmoenius/c2fab/venv/bin/python
+                git:
+                    commit: b255492bfdc92b896838f610fecc0e8a6f4b805c
+                    remote: https://github.com/doubleMcyber/c2fab.git
+                host: DNa1d2679.SUNet
+                memory:
+                    total: "34359738368"
+                os: macOS-26.3-arm64-arm-64bit
+                program: /Users/marlonmoenius/c2fab/src/train_overnight.py
+                python: CPython 3.11.9
+                root: /Users/marlonmoenius/c2fab
+                startedAt: "2026-03-01T12:43:27.658270Z"
+                writerId: sjbrlm6isr4741eqofinbs79ox2yu25v
+        m: []
+        python_version: 3.11.9
+        t:
+            "1":
+                - 1
+                - 11
+                - 49
+                - 71
+            "2":
+                - 1
+                - 11
+                - 49
+                - 71
+            "3":
+                - 13
+                - 61
+            "4": 3.11.9
+            "5": 0.25.0
+            "6": 5.2.0
+            "12": 0.25.0
+            "13": darwin-arm64
+D:
+    value: 8
+bidirectional:
+    value: true
+checkpoint_every:
+    value: 20
+context_len:
+    value: 3500
+l1_weight:
+    value: 0.01
+model_id:
+    value: mistralai/Ministral-8B-Instruct-2410
+ortho_weight:
+    value: 0.05
+steps:
+    value: 1000
