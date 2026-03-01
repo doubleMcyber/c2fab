@@ -1,6 +1,6 @@
 # C²FAB: Vector Causal Charge-Field Attention Bias
 
-A novel, physics-inspired attention mechanism built for **Ministral-8B**, developed over the course of a 4-week hackathon.
+A novel, physics-inspired attention mechanism built for **Ministral-8B**, developed over the course of a 2-day hackathon.
 
 ## Overview
 Long-context models frequently suffer from "signal dilution"—losing track of distant but vital evidence amid thousands of distractor tokens. Current solutions either brutally compress the KV cache or rely on external RAG infrastructure. 
