@@ -1,0 +1,37 @@
+{
+  "os": "macOS-26.3-arm64-arm-64bit",
+  "python": "CPython 3.11.9",
+  "startedAt": "2026-03-01T12:43:27.658270Z",
+  "program": "/Users/marlonmoenius/c2fab/src/train_overnight.py",
+  "codePath": "src/train_overnight.py",
+  "codePathLocal": "src/train_overnight.py",
+  "git": {
+    "remote": "https://github.com/doubleMcyber/c2fab.git",
+    "commit": "b255492bfdc92b896838f610fecc0e8a6f4b805c"
+  },
+  "email": "marlonm@stanford.edu",
+  "root": "/Users/marlonmoenius/c2fab",
+  "host": "DNa1d2679.SUNet",
+  "executable": "/Users/marlonmoenius/c2fab/venv/bin/python",
+  "cpu_count": 12,
+  "cpu_count_logical": 12,
+  "disk": {
+    "/": {
+      "total": "994662584320",
+      "used": "740978515968"
+    }
+  },
+  "memory": {
+    "total": "34359738368"
+  },
+  "apple": {
+    "name": "Apple M2 Max",
+    "ecpuCores": 4,
+    "pcpuCores": 8,
+    "gpuCores": 38,
+    "memoryGb": 32,
+    "swapTotalBytes": "26843545600",
+    "ramTotalBytes": "34359738368"
+  },
+  "writerId": "sjbrlm6isr4741eqofinbs79ox2yu25v"
+}

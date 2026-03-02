@@ -1,0 +1,497 @@
+Starting training for 1000 steps...
+Step 0001 | Loss: 10.700221 | Recall@32: 0.000 | Sparsity: 0.531 | StepTime: 83.696s
+Step 0002 | Loss: 8083.786133 | Recall@32: 0.000 | Sparsity: 0.751 | StepTime: 63.732s
+Step 0003 | Loss: 2239.102539 | Recall@32: 0.000 | Sparsity: 0.723 | StepTime: 76.882s
+Step 0004 | Loss: 240.610397 | Recall@32: 0.000 | Sparsity: 0.801 | StepTime: 77.042s
+Step 0005 | Loss: 143.976349 | Recall@32: 0.000 | Sparsity: 0.886 | StepTime: 68.263s
+Step 0006 | Loss: 1167.954712 | Recall@32: 0.000 | Sparsity: 0.827 | StepTime: 79.255s
+Step 0007 | Loss: 1353.898071 | Recall@32: 0.000 | Sparsity: 0.843 | StepTime: 63.803s
+Step 0008 | Loss: 385.728882 | Recall@32: 0.000 | Sparsity: 0.939 | StepTime: 64.044s
+Step 0009 | Loss: 105.682854 | Recall@32: 0.000 | Sparsity: 0.925 | StepTime: 77.987s
+Step 0010 | Loss: 632.599731 | Recall@32: 0.000 | Sparsity: 0.902 | StepTime: 90.549s
+Step 0011 | Loss: 0.083932 | Recall@32: 1.000 | Sparsity: 0.891 | StepTime: 78.373s
+Step 0012 | Loss: 1227.447266 | Recall@32: 0.000 | Sparsity: 0.885 | StepTime: 66.314s
+Step 0013 | Loss: 525.616272 | Recall@32: 0.000 | Sparsity: 0.883 | StepTime: 66.086s
+Step 0014 | Loss: 0.094076 | Recall@32: 1.000 | Sparsity: 0.884 | StepTime: 65.466s
+Step 0015 | Loss: 0.089727 | Recall@32: 1.000 | Sparsity: 0.883 | StepTime: 64.374s
+Step 0016 | Loss: 0.092079 | Recall@32: 1.000 | Sparsity: 0.881 | StepTime: 46.796s
+Step 0017 | Loss: 0.108183 | Recall@32: 1.000 | Sparsity: 0.880 | StepTime: 43.913s
+Step 0018 | Loss: 11960.254883 | Recall@32: 0.000 | Sparsity: 0.878 | StepTime: 72.627s
+Step 0019 | Loss: 0.104086 | Recall@32: 1.000 | Sparsity: 0.873 | StepTime: 60.748s
+Step 0020 | Loss: 0.093398 | Recall@32: 1.000 | Sparsity: 0.872 | StepTime: 72.746s
+Saved checkpoint: checkpoints/c2fab_weights_step_020.pt
+Step 0021 | Loss: 0.093713 | Recall@32: 1.000 | Sparsity: 0.871 | StepTime: 70.747s
+Step 0022 | Loss: 0.095012 | Recall@32: 1.000 | Sparsity: 0.870 | StepTime: 64.588s
+Step 0023 | Loss: 0.094868 | Recall@32: 1.000 | Sparsity: 0.869 | StepTime: 58.855s
+Step 0024 | Loss: 20468.759766 | Recall@32: 0.000 | Sparsity: 0.869 | StepTime: 86.326s
+Step 0025 | Loss: 0.094945 | Recall@32: 1.000 | Sparsity: 0.866 | StepTime: 87.440s
+Step 0026 | Loss: 0.097253 | Recall@32: 1.000 | Sparsity: 0.850 | StepTime: 58.500s
+Step 0027 | Loss: 0.097005 | Recall@32: 1.000 | Sparsity: 0.921 | StepTime: 46.655s
+Step 0028 | Loss: 0.114036 | Recall@32: 1.000 | Sparsity: 0.816 | StepTime: 54.604s
+Step 0029 | Loss: 0.102661 | Recall@32: 1.000 | Sparsity: 0.849 | StepTime: 60.659s
+Step 0030 | Loss: 0.104809 | Recall@32: 1.000 | Sparsity: 0.889 | StepTime: 68.380s
+Step 0031 | Loss: 0.112155 | Recall@32: 1.000 | Sparsity: 0.760 | StepTime: 71.480s
+Step 0032 | Loss: 0.124763 | Recall@32: 1.000 | Sparsity: 0.772 | StepTime: 62.327s
+Step 0033 | Loss: 0.125652 | Recall@32: 1.000 | Sparsity: 0.777 | StepTime: 47.926s
+Step 0034 | Loss: 0.123270 | Recall@32: 1.000 | Sparsity: 0.863 | StepTime: 58.970s
+Step 0035 | Loss: 0.127563 | Recall@32: 1.000 | Sparsity: 0.789 | StepTime: 67.619s
+Step 0036 | Loss: 0.125044 | Recall@32: 1.000 | Sparsity: 0.850 | StepTime: 59.487s
+Step 0037 | Loss: 0.126076 | Recall@32: 1.000 | Sparsity: 0.846 | StepTime: 57.231s
+Step 0038 | Loss: 0.125251 | Recall@32: 1.000 | Sparsity: 0.871 | StepTime: 56.234s
+Step 0039 | Loss: 0.126937 | Recall@32: 1.000 | Sparsity: 0.850 | StepTime: 55.915s
+Step 0040 | Loss: 0.128434 | Recall@32: 1.000 | Sparsity: 0.824 | StepTime: 64.114s
+Saved checkpoint: checkpoints/c2fab_weights_step_040.pt
+Step 0041 | Loss: 0.126216 | Recall@32: 1.000 | Sparsity: 0.870 | StepTime: 81.204s
+Step 0042 | Loss: 0.126621 | Recall@32: 1.000 | Sparsity: 0.867 | StepTime: 61.993s
+Step 0043 | Loss: 0.131824 | Recall@32: 1.000 | Sparsity: 0.772 | StepTime: 85.925s
+Step 0044 | Loss: 0.131135 | Recall@32: 1.000 | Sparsity: 0.788 | StepTime: 64.267s
+Step 0045 | Loss: 0.131263 | Recall@32: 1.000 | Sparsity: 0.787 | StepTime: 63.744s
+Step 0046 | Loss: 0.127375 | Recall@32: 1.000 | Sparsity: 0.869 | StepTime: 84.998s
+Step 0047 | Loss: 0.126113 | Recall@32: 1.000 | Sparsity: 0.891 | StepTime: 63.547s
+Step 0048 | Loss: 0.131397 | Recall@32: 1.000 | Sparsity: 0.798 | StepTime: 70.614s
+Step 0049 | Loss: 0.129593 | Recall@32: 1.000 | Sparsity: 0.836 | StepTime: 53.596s
+Step 0050 | Loss: 0.132843 | Recall@32: 1.000 | Sparsity: 0.779 | StepTime: 58.898s
+Step 0051 | Loss: 0.134156 | Recall@32: 1.000 | Sparsity: 0.757 | StepTime: 70.679s
+Step 0052 | Loss: 0.133515 | Recall@32: 1.000 | Sparsity: 0.771 | StepTime: 60.846s
+Step 0053 | Loss: 0.134867 | Recall@32: 1.000 | Sparsity: 0.749 | StepTime: 68.596s
+Step 0054 | Loss: 0.133482 | Recall@32: 1.000 | Sparsity: 0.772 | StepTime: 63.710s
+Step 0055 | Loss: 0.132316 | Recall@32: 1.000 | Sparsity: 0.796 | StepTime: 42.877s
+Step 0056 | Loss: 0.129866 | Recall@32: 1.000 | Sparsity: 0.848 | StepTime: 43.942s
+Step 0057 | Loss: 0.133373 | Recall@32: 1.000 | Sparsity: 0.782 | StepTime: 85.890s
+Step 0058 | Loss: 0.129867 | Recall@32: 1.000 | Sparsity: 0.844 | StepTime: 74.398s
+Step 0059 | Loss: 0.130513 | Recall@32: 1.000 | Sparsity: 0.835 | StepTime: 71.849s
+Step 0060 | Loss: 0.130033 | Recall@32: 1.000 | Sparsity: 0.845 | StepTime: 60.990s
+Saved checkpoint: checkpoints/c2fab_weights_step_060.pt
+Step 0061 | Loss: 0.130260 | Recall@32: 1.000 | Sparsity: 0.846 | StepTime: 39.312s
+Step 0062 | Loss: 0.133592 | Recall@32: 1.000 | Sparsity: 0.777 | StepTime: 50.510s
+Step 0063 | Loss: 0.134750 | Recall@32: 1.000 | Sparsity: 0.764 | StepTime: 87.823s
+Step 0064 | Loss: 0.132261 | Recall@32: 1.000 | Sparsity: 0.806 | StepTime: 73.610s
+Step 0065 | Loss: 0.130421 | Recall@32: 1.000 | Sparsity: 0.845 | StepTime: 66.720s
+Step 0066 | Loss: 0.132887 | Recall@32: 1.000 | Sparsity: 0.800 | StepTime: 69.225s
+Step 0067 | Loss: 0.130423 | Recall@32: 1.000 | Sparsity: 0.847 | StepTime: 56.888s
+Step 0068 | Loss: 0.129069 | Recall@32: 1.000 | Sparsity: 0.868 | StepTime: 72.526s
+Step 0069 | Loss: 0.129652 | Recall@32: 1.000 | Sparsity: 0.852 | StepTime: 47.412s
+Step 0070 | Loss: 0.136076 | Recall@32: 1.000 | Sparsity: 0.745 | StepTime: 34.408s
+Step 0071 | Loss: 0.132833 | Recall@32: 1.000 | Sparsity: 0.805 | StepTime: 55.714s
+Step 0072 | Loss: 0.128225 | Recall@32: 1.000 | Sparsity: 0.876 | StepTime: 60.435s
+Step 0073 | Loss: 0.129924 | Recall@32: 1.000 | Sparsity: 0.852 | StepTime: 47.674s
+Step 0074 | Loss: 0.130795 | Recall@32: 1.000 | Sparsity: 0.839 | StepTime: 48.610s
+Step 0075 | Loss: 0.130730 | Recall@32: 1.000 | Sparsity: 0.835 | StepTime: 66.212s
+Step 0076 | Loss: 0.129137 | Recall@32: 1.000 | Sparsity: 0.863 | StepTime: 65.588s
+Step 0077 | Loss: 0.134978 | Recall@32: 1.000 | Sparsity: 0.757 | StepTime: 66.698s
+Step 0078 | Loss: 0.131057 | Recall@32: 1.000 | Sparsity: 0.840 | StepTime: 77.760s
+Step 0079 | Loss: 0.133948 | Recall@32: 1.000 | Sparsity: 0.781 | StepTime: 74.746s
+Step 0080 | Loss: 0.134886 | Recall@32: 1.000 | Sparsity: 0.765 | StepTime: 69.215s
+Saved checkpoint: checkpoints/c2fab_weights_step_080.pt
+Step 0081 | Loss: 0.133949 | Recall@32: 1.000 | Sparsity: 0.781 | StepTime: 57.416s
+Step 0082 | Loss: 0.130732 | Recall@32: 1.000 | Sparsity: 0.843 | StepTime: 77.016s
+Step 0083 | Loss: 0.134307 | Recall@32: 1.000 | Sparsity: 0.777 | StepTime: 76.808s
+Step 0084 | Loss: 0.135022 | Recall@32: 1.000 | Sparsity: 0.763 | StepTime: 47.899s
+Step 0085 | Loss: 0.134798 | Recall@32: 1.000 | Sparsity: 0.767 | StepTime: 63.988s
+Step 0086 | Loss: 0.134125 | Recall@32: 1.000 | Sparsity: 0.775 | StepTime: 81.509s
+Step 0087 | Loss: 0.132134 | Recall@32: 1.000 | Sparsity: 0.807 | StepTime: 56.473s
+Step 0088 | Loss: 0.133630 | Recall@32: 1.000 | Sparsity: 0.783 | StepTime: 69.798s
+Step 0089 | Loss: 0.131223 | Recall@32: 1.000 | Sparsity: 0.823 | StepTime: 69.797s
+Step 0090 | Loss: 0.130516 | Recall@32: 1.000 | Sparsity: 0.847 | StepTime: 49.278s
+Step 0091 | Loss: 0.135259 | Recall@32: 1.000 | Sparsity: 0.751 | StepTime: 51.602s
+Step 0092 | Loss: 0.131121 | Recall@32: 1.000 | Sparsity: 0.834 | StepTime: 51.256s
+Step 0093 | Loss: 0.134965 | Recall@32: 1.000 | Sparsity: 0.764 | StepTime: 66.578s
+Step 0094 | Loss: 0.132843 | Recall@32: 1.000 | Sparsity: 0.804 | StepTime: 69.735s
+Step 0095 | Loss: 0.131425 | Recall@32: 1.000 | Sparsity: 0.824 | StepTime: 63.825s
+Step 0096 | Loss: 0.131645 | Recall@32: 1.000 | Sparsity: 0.823 | StepTime: 76.348s
+Step 0097 | Loss: 0.131745 | Recall@32: 1.000 | Sparsity: 0.820 | StepTime: 80.284s
+Step 0098 | Loss: 0.133088 | Recall@32: 1.000 | Sparsity: 0.795 | StepTime: 66.462s
+Step 0099 | Loss: 0.131489 | Recall@32: 1.000 | Sparsity: 0.824 | StepTime: 66.869s
+Step 0100 | Loss: 0.135371 | Recall@32: 1.000 | Sparsity: 0.757 | StepTime: 86.894s
+Saved checkpoint: checkpoints/c2fab_weights_step_100.pt
+Step 0101 | Loss: 0.132330 | Recall@32: 1.000 | Sparsity: 0.806 | StepTime: 80.610s
+Step 0102 | Loss: 0.135311 | Recall@32: 1.000 | Sparsity: 0.753 | StepTime: 58.284s
+Step 0103 | Loss: 0.133063 | Recall@32: 1.000 | Sparsity: 0.796 | StepTime: 53.901s
+Step 0104 | Loss: 0.129655 | Recall@32: 1.000 | Sparsity: 0.857 | StepTime: 64.991s
+Step 0105 | Loss: 0.135273 | Recall@32: 1.000 | Sparsity: 0.750 | StepTime: 60.925s
+Step 0106 | Loss: 0.131160 | Recall@32: 1.000 | Sparsity: 0.831 | StepTime: 68.858s
+Step 0107 | Loss: 0.130241 | Recall@32: 1.000 | Sparsity: 0.844 | StepTime: 73.414s
+Step 0108 | Loss: 0.128997 | Recall@32: 1.000 | Sparsity: 0.869 | StepTime: 76.864s
+Step 0109 | Loss: 0.132977 | Recall@32: 1.000 | Sparsity: 0.802 | StepTime: 63.643s
+Step 0110 | Loss: 0.133447 | Recall@32: 1.000 | Sparsity: 0.795 | StepTime: 78.391s
+Step 0111 | Loss: 0.128704 | Recall@32: 1.000 | Sparsity: 0.867 | StepTime: 57.482s
+Step 0112 | Loss: 0.129146 | Recall@32: 1.000 | Sparsity: 0.864 | StepTime: 57.524s
+Step 0113 | Loss: 0.133573 | Recall@32: 1.000 | Sparsity: 0.786 | StepTime: 53.105s
+Step 0114 | Loss: 0.132713 | Recall@32: 1.000 | Sparsity: 0.805 | StepTime: 39.347s
+Step 0115 | Loss: 0.134123 | Recall@32: 1.000 | Sparsity: 0.777 | StepTime: 44.683s
+Step 0116 | Loss: 0.129445 | Recall@32: 1.000 | Sparsity: 0.856 | StepTime: 54.497s
+Step 0117 | Loss: 0.128689 | Recall@32: 1.000 | Sparsity: 0.873 | StepTime: 44.486s
+Step 0118 | Loss: 0.130325 | Recall@32: 1.000 | Sparsity: 0.842 | StepTime: 46.796s
+Step 0119 | Loss: 0.130947 | Recall@32: 1.000 | Sparsity: 0.831 | StepTime: 38.600s
+Step 0120 | Loss: 0.128660 | Recall@32: 1.000 | Sparsity: 0.867 | StepTime: 66.694s
+Saved checkpoint: checkpoints/c2fab_weights_step_120.pt
+Step 0121 | Loss: 0.131559 | Recall@32: 1.000 | Sparsity: 0.822 | StepTime: 62.583s
+Step 0122 | Loss: 0.132818 | Recall@32: 1.000 | Sparsity: 0.795 | StepTime: 50.569s
+Step 0123 | Loss: 0.132614 | Recall@32: 1.000 | Sparsity: 0.801 | StepTime: 68.929s
+Step 0124 | Loss: 0.133830 | Recall@32: 1.000 | Sparsity: 0.784 | StepTime: 52.027s
+Step 0125 | Loss: 0.128803 | Recall@32: 1.000 | Sparsity: 0.868 | StepTime: 78.497s
+Step 0126 | Loss: 0.134402 | Recall@32: 1.000 | Sparsity: 0.770 | StepTime: 73.842s
+Step 0127 | Loss: 0.128104 | Recall@32: 1.000 | Sparsity: 0.879 | StepTime: 51.522s
+Step 0128 | Loss: 0.128230 | Recall@32: 1.000 | Sparsity: 0.872 | StepTime: 53.167s
+Step 0129 | Loss: 0.130177 | Recall@32: 1.000 | Sparsity: 0.847 | StepTime: 73.269s
+Step 0130 | Loss: 0.130435 | Recall@32: 1.000 | Sparsity: 0.845 | StepTime: 61.023s
+Step 0131 | Loss: 0.131587 | Recall@32: 1.000 | Sparsity: 0.818 | StepTime: 67.179s
+Step 0132 | Loss: 0.135441 | Recall@32: 1.000 | Sparsity: 0.756 | StepTime: 69.123s
+Step 0133 | Loss: 0.128626 | Recall@32: 1.000 | Sparsity: 0.868 | StepTime: 53.140s
+Step 0134 | Loss: 0.134417 | Recall@32: 1.000 | Sparsity: 0.768 | StepTime: 78.675s
+Step 0135 | Loss: 0.132538 | Recall@32: 1.000 | Sparsity: 0.802 | StepTime: 75.050s
+Step 0136 | Loss: 0.131502 | Recall@32: 1.000 | Sparsity: 0.821 | StepTime: 61.308s
+Step 0137 | Loss: 0.131497 | Recall@32: 1.000 | Sparsity: 0.821 | StepTime: 66.407s
+Step 0138 | Loss: 0.133882 | Recall@32: 1.000 | Sparsity: 0.778 | StepTime: 64.279s
+Step 0139 | Loss: 0.132773 | Recall@32: 1.000 | Sparsity: 0.798 | StepTime: 64.100s
+Step 0140 | Loss: 0.134119 | Recall@32: 1.000 | Sparsity: 0.772 | StepTime: 59.071s
+Saved checkpoint: checkpoints/c2fab_weights_step_140.pt
+Step 0141 | Loss: 0.133392 | Recall@32: 1.000 | Sparsity: 0.787 | StepTime: 47.176s
+Step 0142 | Loss: 0.134370 | Recall@32: 1.000 | Sparsity: 0.768 | StepTime: 44.307s
+Step 0143 | Loss: 0.130280 | Recall@32: 1.000 | Sparsity: 0.842 | StepTime: 74.843s
+Step 0144 | Loss: 0.127732 | Recall@32: 1.000 | Sparsity: 0.880 | StepTime: 57.057s
+Step 0145 | Loss: 0.134254 | Recall@32: 1.000 | Sparsity: 0.778 | StepTime: 51.727s
+Step 0146 | Loss: 0.128984 | Recall@32: 1.000 | Sparsity: 0.864 | StepTime: 78.884s
+Step 0147 | Loss: 0.131399 | Recall@32: 1.000 | Sparsity: 0.822 | StepTime: 46.119s
+Step 0148 | Loss: 0.127313 | Recall@32: 1.000 | Sparsity: 0.890 | StepTime: 55.019s
+Step 0149 | Loss: 0.132781 | Recall@32: 1.000 | Sparsity: 0.797 | StepTime: 81.968s
+Step 0150 | Loss: 0.133937 | Recall@32: 1.000 | Sparsity: 0.776 | StepTime: 70.328s
+Step 0151 | Loss: 0.131803 | Recall@32: 1.000 | Sparsity: 0.814 | StepTime: 80.227s
+Step 0152 | Loss: 0.133849 | Recall@32: 1.000 | Sparsity: 0.781 | StepTime: 46.866s
+Step 0153 | Loss: 0.133215 | Recall@32: 1.000 | Sparsity: 0.789 | StepTime: 47.930s
+Step 0154 | Loss: 0.128782 | Recall@32: 1.000 | Sparsity: 0.865 | StepTime: 48.692s
+Step 0155 | Loss: 0.131521 | Recall@32: 1.000 | Sparsity: 0.823 | StepTime: 55.991s
+Step 0156 | Loss: 0.135130 | Recall@32: 1.000 | Sparsity: 0.756 | StepTime: 50.138s
+Step 0157 | Loss: 0.134493 | Recall@32: 1.000 | Sparsity: 0.769 | StepTime: 53.546s
+Step 0158 | Loss: 0.133765 | Recall@32: 1.000 | Sparsity: 0.779 | StepTime: 70.455s
+Step 0159 | Loss: 0.133235 | Recall@32: 1.000 | Sparsity: 0.784 | StepTime: 59.783s
+Step 0160 | Loss: 0.130589 | Recall@32: 1.000 | Sparsity: 0.842 | StepTime: 47.790s
+Saved checkpoint: checkpoints/c2fab_weights_step_160.pt
+Step 0161 | Loss: 0.134587 | Recall@32: 1.000 | Sparsity: 0.765 | StepTime: 68.689s
+Step 0162 | Loss: 0.127862 | Recall@32: 1.000 | Sparsity: 0.879 | StepTime: 55.051s
+Step 0163 | Loss: 0.127934 | Recall@32: 1.000 | Sparsity: 0.878 | StepTime: 48.590s
+Step 0164 | Loss: 0.132435 | Recall@32: 1.000 | Sparsity: 0.807 | StepTime: 62.954s
+Step 0165 | Loss: 0.134468 | Recall@32: 1.000 | Sparsity: 0.762 | StepTime: 72.328s
+Step 0166 | Loss: 0.128421 | Recall@32: 1.000 | Sparsity: 0.873 | StepTime: 53.789s
+Step 0167 | Loss: 0.128901 | Recall@32: 1.000 | Sparsity: 0.865 | StepTime: 67.352s
+Step 0168 | Loss: 0.132706 | Recall@32: 1.000 | Sparsity: 0.798 | StepTime: 53.805s
+Step 0169 | Loss: 0.131200 | Recall@32: 1.000 | Sparsity: 0.824 | StepTime: 50.837s
+Step 0170 | Loss: 0.128977 | Recall@32: 1.000 | Sparsity: 0.863 | StepTime: 48.230s
+Step 0171 | Loss: 0.132370 | Recall@32: 1.000 | Sparsity: 0.809 | StepTime: 60.543s
+Step 0172 | Loss: 0.135578 | Recall@32: 1.000 | Sparsity: 0.749 | StepTime: 58.320s
+Step 0173 | Loss: 0.128602 | Recall@32: 1.000 | Sparsity: 0.867 | StepTime: 75.887s
+Step 0174 | Loss: 0.130194 | Recall@32: 1.000 | Sparsity: 0.837 | StepTime: 63.853s
+Step 0175 | Loss: 0.130073 | Recall@32: 1.000 | Sparsity: 0.841 | StepTime: 54.785s
+Step 0176 | Loss: 0.132561 | Recall@32: 1.000 | Sparsity: 0.798 | StepTime: 68.800s
+Step 0177 | Loss: 0.132613 | Recall@32: 1.000 | Sparsity: 0.799 | StepTime: 68.365s
+Step 0178 | Loss: 0.132901 | Recall@32: 1.000 | Sparsity: 0.791 | StepTime: 71.050s
+Step 0179 | Loss: 0.129220 | Recall@32: 1.000 | Sparsity: 0.861 | StepTime: 59.195s
+Step 0180 | Loss: 0.127585 | Recall@32: 1.000 | Sparsity: 0.880 | StepTime: 51.290s
+Saved checkpoint: checkpoints/c2fab_weights_step_180.pt
+Step 0181 | Loss: 0.129276 | Recall@32: 1.000 | Sparsity: 0.860 | StepTime: 49.550s
+Step 0182 | Loss: 0.129191 | Recall@32: 1.000 | Sparsity: 0.860 | StepTime: 49.937s
+Step 0183 | Loss: 0.130758 | Recall@32: 1.000 | Sparsity: 0.826 | StepTime: 70.639s
+Step 0184 | Loss: 0.135422 | Recall@32: 1.000 | Sparsity: 0.750 | StepTime: 62.124s
+Step 0185 | Loss: 0.132548 | Recall@32: 1.000 | Sparsity: 0.797 | StepTime: 58.733s
+Step 0186 | Loss: 0.129946 | Recall@32: 1.000 | Sparsity: 0.848 | StepTime: 42.342s
+Step 0187 | Loss: 0.131495 | Recall@32: 1.000 | Sparsity: 0.821 | StepTime: 50.862s
+Step 0188 | Loss: 0.132649 | Recall@32: 1.000 | Sparsity: 0.798 | StepTime: 57.544s
+Step 0189 | Loss: 0.131660 | Recall@32: 1.000 | Sparsity: 0.814 | StepTime: 69.889s
+Step 0190 | Loss: 0.127744 | Recall@32: 1.000 | Sparsity: 0.884 | StepTime: 51.063s
+Step 0191 | Loss: 0.134823 | Recall@32: 1.000 | Sparsity: 0.761 | StepTime: 53.238s
+Step 0192 | Loss: 0.135130 | Recall@32: 1.000 | Sparsity: 0.758 | StepTime: 52.563s
+Step 0193 | Loss: 0.129203 | Recall@32: 1.000 | Sparsity: 0.857 | StepTime: 51.650s
+Step 0194 | Loss: 0.132684 | Recall@32: 1.000 | Sparsity: 0.795 | StepTime: 76.115s
+Step 0195 | Loss: 0.134023 | Recall@32: 1.000 | Sparsity: 0.777 | StepTime: 81.575s
+Step 0196 | Loss: 0.133325 | Recall@32: 1.000 | Sparsity: 0.786 | StepTime: 69.371s
+Step 0197 | Loss: 0.128698 | Recall@32: 1.000 | Sparsity: 0.866 | StepTime: 71.035s
+Step 0198 | Loss: 0.132536 | Recall@32: 1.000 | Sparsity: 0.804 | StepTime: 67.199s
+Step 0199 | Loss: 0.134562 | Recall@32: 1.000 | Sparsity: 0.762 | StepTime: 52.176s
+Step 0200 | Loss: 0.134023 | Recall@32: 1.000 | Sparsity: 0.780 | StepTime: 70.933s
+Saved checkpoint: checkpoints/c2fab_weights_step_200.pt
+Step 0201 | Loss: 0.135294 | Recall@32: 1.000 | Sparsity: 0.752 | StepTime: 49.760s
+Step 0202 | Loss: 0.133218 | Recall@32: 1.000 | Sparsity: 0.786 | StepTime: 61.658s
+Step 0203 | Loss: 0.129451 | Recall@32: 1.000 | Sparsity: 0.855 | StepTime: 84.939s
+Step 0204 | Loss: 0.133760 | Recall@32: 1.000 | Sparsity: 0.780 | StepTime: 63.008s
+Step 0205 | Loss: 0.130689 | Recall@32: 1.000 | Sparsity: 0.831 | StepTime: 67.854s
+Step 0206 | Loss: 0.127137 | Recall@32: 1.000 | Sparsity: 0.891 | StepTime: 55.434s
+Step 0207 | Loss: 0.128148 | Recall@32: 1.000 | Sparsity: 0.872 | StepTime: 52.831s
+Step 0208 | Loss: 0.128516 | Recall@32: 1.000 | Sparsity: 0.869 | StepTime: 67.057s
+Step 0209 | Loss: 0.127295 | Recall@32: 1.000 | Sparsity: 0.885 | StepTime: 72.357s
+Step 0210 | Loss: 0.129168 | Recall@32: 1.000 | Sparsity: 0.857 | StepTime: 57.984s
+Step 0211 | Loss: 0.128510 | Recall@32: 1.000 | Sparsity: 0.869 | StepTime: 65.290s
+Step 0212 | Loss: 0.129948 | Recall@32: 1.000 | Sparsity: 0.844 | StepTime: 60.629s
+Step 0213 | Loss: 0.131681 | Recall@32: 1.000 | Sparsity: 0.814 | StepTime: 64.522s
+Step 0214 | Loss: 0.133565 | Recall@32: 1.000 | Sparsity: 0.780 | StepTime: 52.570s
+Step 0215 | Loss: 0.128502 | Recall@32: 1.000 | Sparsity: 0.869 | StepTime: 52.412s
+Step 0216 | Loss: 0.134523 | Recall@32: 1.000 | Sparsity: 0.762 | StepTime: 49.482s
+Step 0217 | Loss: 0.133471 | Recall@32: 1.000 | Sparsity: 0.783 | StepTime: 53.350s
+Step 0218 | Loss: 0.134003 | Recall@32: 1.000 | Sparsity: 0.772 | StepTime: 53.715s
+Step 0219 | Loss: 0.129144 | Recall@32: 1.000 | Sparsity: 0.862 | StepTime: 52.478s
+Step 0220 | Loss: 0.129267 | Recall@32: 1.000 | Sparsity: 0.857 | StepTime: 68.856s
+Saved checkpoint: checkpoints/c2fab_weights_step_220.pt
+Step 0221 | Loss: 0.134710 | Recall@32: 1.000 | Sparsity: 0.754 | StepTime: 56.917s
+Step 0222 | Loss: 0.133967 | Recall@32: 1.000 | Sparsity: 0.780 | StepTime: 50.912s
+Step 0223 | Loss: 0.133725 | Recall@32: 1.000 | Sparsity: 0.775 | StepTime: 67.241s
+Step 0224 | Loss: 0.129418 | Recall@32: 1.000 | Sparsity: 0.851 | StepTime: 85.056s
+Step 0225 | Loss: 0.127800 | Recall@32: 1.000 | Sparsity: 0.879 | StepTime: 62.777s
+Step 0226 | Loss: 0.127469 | Recall@32: 1.000 | Sparsity: 0.881 | StepTime: 76.118s
+Step 0227 | Loss: 0.134718 | Recall@32: 1.000 | Sparsity: 0.762 | StepTime: 61.624s
+Step 0228 | Loss: 0.132220 | Recall@32: 1.000 | Sparsity: 0.808 | StepTime: 48.155s
+Step 0229 | Loss: 0.133149 | Recall@32: 1.000 | Sparsity: 0.787 | StepTime: 72.715s
+Step 0230 | Loss: 0.132472 | Recall@32: 1.000 | Sparsity: 0.799 | StepTime: 54.143s
+Step 0231 | Loss: 0.132515 | Recall@32: 1.000 | Sparsity: 0.799 | StepTime: 44.191s
+Step 0232 | Loss: 0.132442 | Recall@32: 1.000 | Sparsity: 0.797 | StepTime: 56.817s
+Step 0233 | Loss: 0.129997 | Recall@32: 1.000 | Sparsity: 0.848 | StepTime: 54.253s
+Step 0234 | Loss: 0.132477 | Recall@32: 1.000 | Sparsity: 0.801 | StepTime: 44.062s
+Step 0235 | Loss: 0.131536 | Recall@32: 1.000 | Sparsity: 0.819 | StepTime: 34.835s
+Step 0236 | Loss: 0.133202 | Recall@32: 1.000 | Sparsity: 0.784 | StepTime: 57.936s
+Step 0237 | Loss: 0.131264 | Recall@32: 1.000 | Sparsity: 0.825 | StepTime: 59.381s
+Step 0238 | Loss: 0.128340 | Recall@32: 1.000 | Sparsity: 0.870 | StepTime: 57.262s
+Step 0239 | Loss: 0.131542 | Recall@32: 1.000 | Sparsity: 0.815 | StepTime: 64.384s
+Step 0240 | Loss: 0.130381 | Recall@32: 1.000 | Sparsity: 0.844 | StepTime: 55.760s
+Saved checkpoint: checkpoints/c2fab_weights_step_240.pt
+Step 0241 | Loss: 0.135357 | Recall@32: 1.000 | Sparsity: 0.751 | StepTime: 49.647s
+Step 0242 | Loss: 0.130085 | Recall@32: 1.000 | Sparsity: 0.844 | StepTime: 55.386s
+Step 0243 | Loss: 0.130656 | Recall@32: 1.000 | Sparsity: 0.834 | StepTime: 54.024s
+Step 0244 | Loss: 0.131532 | Recall@32: 1.000 | Sparsity: 0.815 | StepTime: 70.682s
+Step 0245 | Loss: 0.134757 | Recall@32: 1.000 | Sparsity: 0.756 | StepTime: 73.394s
+Step 0246 | Loss: 0.127389 | Recall@32: 1.000 | Sparsity: 0.884 | StepTime: 63.950s
+Step 0247 | Loss: 0.132971 | Recall@32: 1.000 | Sparsity: 0.786 | StepTime: 46.630s
+Step 0248 | Loss: 0.133515 | Recall@32: 1.000 | Sparsity: 0.782 | StepTime: 65.542s
+Step 0249 | Loss: 0.127434 | Recall@32: 1.000 | Sparsity: 0.883 | StepTime: 45.132s
+Step 0250 | Loss: 0.135238 | Recall@32: 1.000 | Sparsity: 0.752 | StepTime: 37.182s
+Step 0251 | Loss: 0.135355 | Recall@32: 1.000 | Sparsity: 0.751 | StepTime: 49.094s
+Step 0252 | Loss: 0.134891 | Recall@32: 1.000 | Sparsity: 0.752 | StepTime: 64.765s
+Step 0253 | Loss: 0.129041 | Recall@32: 1.000 | Sparsity: 0.865 | StepTime: 46.809s
+Step 0254 | Loss: 0.132445 | Recall@32: 1.000 | Sparsity: 0.801 | StepTime: 53.157s
+Step 0255 | Loss: 0.129300 | Recall@32: 1.000 | Sparsity: 0.849 | StepTime: 80.535s
+Step 0256 | Loss: 0.129180 | Recall@32: 1.000 | Sparsity: 0.860 | StepTime: 65.513s
+Step 0257 | Loss: 0.134013 | Recall@32: 1.000 | Sparsity: 0.774 | StepTime: 59.361s
+Step 0258 | Loss: 0.132780 | Recall@32: 1.000 | Sparsity: 0.799 | StepTime: 89.082s
+Step 0259 | Loss: 0.132794 | Recall@32: 1.000 | Sparsity: 0.792 | StepTime: 58.142s
+Step 0260 | Loss: 0.130049 | Recall@32: 1.000 | Sparsity: 0.847 | StepTime: 72.250s
+Saved checkpoint: checkpoints/c2fab_weights_step_260.pt
+Step 0261 | Loss: 0.133886 | Recall@32: 1.000 | Sparsity: 0.773 | StepTime: 73.348s
+Step 0262 | Loss: 0.132392 | Recall@32: 1.000 | Sparsity: 0.799 | StepTime: 56.591s
+Step 0263 | Loss: 0.133878 | Recall@32: 1.000 | Sparsity: 0.778 | StepTime: 75.074s
+Step 0264 | Loss: 0.129273 | Recall@32: 1.000 | Sparsity: 0.862 | StepTime: 65.619s
+Step 0265 | Loss: 0.130525 | Recall@32: 1.000 | Sparsity: 0.833 | StepTime: 55.996s
+Step 0266 | Loss: 0.133305 | Recall@32: 1.000 | Sparsity: 0.782 | StepTime: 66.970s
+Step 0267 | Loss: 0.129772 | Recall@32: 1.000 | Sparsity: 0.850 | StepTime: 44.293s
+Step 0268 | Loss: 0.130054 | Recall@32: 1.000 | Sparsity: 0.839 | StepTime: 63.378s
+Step 0269 | Loss: 0.128443 | Recall@32: 1.000 | Sparsity: 0.872 | StepTime: 67.646s
+Step 0270 | Loss: 0.133907 | Recall@32: 1.000 | Sparsity: 0.773 | StepTime: 56.194s
+Step 0271 | Loss: 0.133865 | Recall@32: 1.000 | Sparsity: 0.773 | StepTime: 51.885s
+Step 0272 | Loss: 0.127737 | Recall@32: 1.000 | Sparsity: 0.879 | StepTime: 59.577s
+Step 0273 | Loss: 0.128284 | Recall@32: 1.000 | Sparsity: 0.871 | StepTime: 44.843s
+Step 0274 | Loss: 0.129669 | Recall@32: 1.000 | Sparsity: 0.848 | StepTime: 36.993s
+Step 0275 | Loss: 0.132495 | Recall@32: 1.000 | Sparsity: 0.799 | StepTime: 57.904s
+Step 0276 | Loss: 0.131457 | Recall@32: 1.000 | Sparsity: 0.815 | StepTime: 73.347s
+Step 0277 | Loss: 0.128413 | Recall@32: 1.000 | Sparsity: 0.870 | StepTime: 51.544s
+Step 0278 | Loss: 0.130919 | Recall@32: 1.000 | Sparsity: 0.828 | StepTime: 63.511s
+Step 0279 | Loss: 0.132752 | Recall@32: 1.000 | Sparsity: 0.799 | StepTime: 60.216s
+Step 0280 | Loss: 0.134222 | Recall@32: 1.000 | Sparsity: 0.769 | StepTime: 63.742s
+Saved checkpoint: checkpoints/c2fab_weights_step_280.pt
+Step 0281 | Loss: 0.130393 | Recall@32: 1.000 | Sparsity: 0.836 | StepTime: 64.028s
+Step 0282 | Loss: 0.132378 | Recall@32: 1.000 | Sparsity: 0.796 | StepTime: 58.716s
+Step 0283 | Loss: 0.127725 | Recall@32: 1.000 | Sparsity: 0.879 | StepTime: 79.969s
+Step 0284 | Loss: 0.128991 | Recall@32: 1.000 | Sparsity: 0.867 | StepTime: 76.016s
+Step 0285 | Loss: 0.128338 | Recall@32: 1.000 | Sparsity: 0.869 | StepTime: 63.232s
+Step 0286 | Loss: 0.131451 | Recall@32: 1.000 | Sparsity: 0.812 | StepTime: 58.876s
+Step 0287 | Loss: 0.128422 | Recall@32: 1.000 | Sparsity: 0.872 | StepTime: 57.927s
+Step 0288 | Loss: 0.131661 | Recall@32: 1.000 | Sparsity: 0.811 | StepTime: 52.563s
+Step 0289 | Loss: 0.129907 | Recall@32: 1.000 | Sparsity: 0.849 | StepTime: 45.308s
+Step 0290 | Loss: 0.134045 | Recall@32: 1.000 | Sparsity: 0.771 | StepTime: 67.648s
+Step 0291 | Loss: 0.128909 | Recall@32: 1.000 | Sparsity: 0.858 | StepTime: 52.591s
+Step 0292 | Loss: 0.132373 | Recall@32: 1.000 | Sparsity: 0.800 | StepTime: 50.096s
+Step 0293 | Loss: 0.127715 | Recall@32: 1.000 | Sparsity: 0.879 | StepTime: 55.995s
+Step 0294 | Loss: 0.130099 | Recall@32: 1.000 | Sparsity: 0.844 | StepTime: 58.342s
+Step 0295 | Loss: 0.132393 | Recall@32: 1.000 | Sparsity: 0.802 | StepTime: 48.798s
+Step 0296 | Loss: 0.133035 | Recall@32: 1.000 | Sparsity: 0.786 | StepTime: 64.676s
+Step 0297 | Loss: 0.130947 | Recall@32: 1.000 | Sparsity: 0.826 | StepTime: 57.683s
+Step 0298 | Loss: 0.130824 | Recall@32: 1.000 | Sparsity: 0.827 | StepTime: 54.974s
+Step 0299 | Loss: 0.131185 | Recall@32: 1.000 | Sparsity: 0.826 | StepTime: 59.006s
+Step 0300 | Loss: 0.133971 | Recall@32: 1.000 | Sparsity: 0.771 | StepTime: 60.417s
+Saved checkpoint: checkpoints/c2fab_weights_step_300.pt
+Step 0301 | Loss: 0.134539 | Recall@32: 1.000 | Sparsity: 0.759 | StepTime: 46.525s
+Step 0302 | Loss: 0.129887 | Recall@32: 1.000 | Sparsity: 0.842 | StepTime: 45.376s
+Step 0303 | Loss: 0.128405 | Recall@32: 1.000 | Sparsity: 0.872 | StepTime: 59.898s
+Step 0304 | Loss: 0.131199 | Recall@32: 1.000 | Sparsity: 0.825 | StepTime: 51.659s
+Step 0305 | Loss: 0.132499 | Recall@32: 1.000 | Sparsity: 0.797 | StepTime: 56.667s
+Step 0306 | Loss: 0.134240 | Recall@32: 1.000 | Sparsity: 0.766 | StepTime: 64.804s
+Step 0307 | Loss: 0.131426 | Recall@32: 1.000 | Sparsity: 0.820 | StepTime: 57.082s
+Step 0308 | Loss: 0.127298 | Recall@32: 1.000 | Sparsity: 0.885 | StepTime: 59.400s
+Step 0309 | Loss: 0.131420 | Recall@32: 1.000 | Sparsity: 0.816 | StepTime: 69.022s
+Step 0310 | Loss: 0.129217 | Recall@32: 1.000 | Sparsity: 0.862 | StepTime: 63.729s
+Step 0311 | Loss: 0.127941 | Recall@32: 1.000 | Sparsity: 0.882 | StepTime: 52.780s
+Step 0312 | Loss: 0.130808 | Recall@32: 1.000 | Sparsity: 0.827 | StepTime: 66.925s
+Step 0313 | Loss: 0.130362 | Recall@32: 1.000 | Sparsity: 0.836 | StepTime: 58.018s
+Step 0314 | Loss: 0.134226 | Recall@32: 1.000 | Sparsity: 0.768 | StepTime: 50.768s
+Step 0315 | Loss: 0.132722 | Recall@32: 1.000 | Sparsity: 0.792 | StepTime: 81.402s
+Step 0316 | Loss: 0.128956 | Recall@32: 1.000 | Sparsity: 0.865 | StepTime: 76.719s
+Step 0317 | Loss: 0.131775 | Recall@32: 1.000 | Sparsity: 0.808 | StepTime: 75.828s
+Step 0318 | Loss: 0.129687 | Recall@32: 1.000 | Sparsity: 0.847 | StepTime: 67.500s
+Step 0319 | Loss: 0.134152 | Recall@32: 1.000 | Sparsity: 0.770 | StepTime: 46.917s
+Step 0320 | Loss: 0.133233 | Recall@32: 1.000 | Sparsity: 0.782 | StepTime: 62.326s
+Saved checkpoint: checkpoints/c2fab_weights_step_320.pt
+Step 0321 | Loss: 0.134451 | Recall@32: 1.000 | Sparsity: 0.757 | StepTime: 67.920s
+Step 0322 | Loss: 0.132060 | Recall@32: 1.000 | Sparsity: 0.805 | StepTime: 53.125s
+Step 0323 | Loss: 0.134511 | Recall@32: 1.000 | Sparsity: 0.759 | StepTime: 49.148s
+Step 0324 | Loss: 0.130692 | Recall@32: 1.000 | Sparsity: 0.831 | StepTime: 57.227s
+Step 0325 | Loss: 0.134217 | Recall@32: 1.000 | Sparsity: 0.766 | StepTime: 53.745s
+Step 0326 | Loss: 0.132128 | Recall@32: 1.000 | Sparsity: 0.805 | StepTime: 80.329s
+Step 0327 | Loss: 0.130350 | Recall@32: 1.000 | Sparsity: 0.837 | StepTime: 62.068s
+Step 0328 | Loss: 0.130245 | Recall@32: 1.000 | Sparsity: 0.836 | StepTime: 56.760s
+Step 0329 | Loss: 0.132359 | Recall@32: 1.000 | Sparsity: 0.802 | StepTime: 65.172s
+Step 0330 | Loss: 0.134350 | Recall@32: 1.000 | Sparsity: 0.764 | StepTime: 73.702s
+Step 0331 | Loss: 0.132430 | Recall@32: 1.000 | Sparsity: 0.799 | StepTime: 67.806s
+Step 0332 | Loss: 0.132777 | Recall@32: 1.000 | Sparsity: 0.792 | StepTime: 65.242s
+Step 0333 | Loss: 0.133345 | Recall@32: 1.000 | Sparsity: 0.782 | StepTime: 45.181s
+Step 0334 | Loss: 0.128337 | Recall@32: 1.000 | Sparsity: 0.868 | StepTime: 47.462s
+Step 0335 | Loss: 0.132241 | Recall@32: 1.000 | Sparsity: 0.805 | StepTime: 76.574s
+Step 0336 | Loss: 0.132118 | Recall@32: 1.000 | Sparsity: 0.805 | StepTime: 68.264s
+Step 0337 | Loss: 0.132697 | Recall@32: 1.000 | Sparsity: 0.800 | StepTime: 52.685s
+Step 0338 | Loss: 0.132425 | Recall@32: 1.000 | Sparsity: 0.800 | StepTime: 85.647s
+Step 0339 | Loss: 0.132350 | Recall@32: 1.000 | Sparsity: 0.802 | StepTime: 72.203s
+Step 0340 | Loss: 0.129964 | Recall@32: 1.000 | Sparsity: 0.848 | StepTime: 61.685s
+Saved checkpoint: checkpoints/c2fab_weights_step_340.pt
+Step 0341 | Loss: 0.128660 | Recall@32: 1.000 | Sparsity: 0.865 | StepTime: 57.905s
+Step 0342 | Loss: 0.134589 | Recall@32: 1.000 | Sparsity: 0.758 | StepTime: 49.316s
+Step 0343 | Loss: 0.129249 | Recall@32: 1.000 | Sparsity: 0.852 | StepTime: 62.652s
+Step 0344 | Loss: 0.134587 | Recall@32: 1.000 | Sparsity: 0.758 | StepTime: 72.043s
+Step 0345 | Loss: 0.133968 | Recall@32: 1.000 | Sparsity: 0.772 | StepTime: 62.678s
+Step 0346 | Loss: 0.130616 | Recall@32: 1.000 | Sparsity: 0.832 | StepTime: 58.309s
+Step 0347 | Loss: 0.127565 | Recall@32: 1.000 | Sparsity: 0.882 | StepTime: 53.171s
+Step 0348 | Loss: 0.128326 | Recall@32: 1.000 | Sparsity: 0.868 | StepTime: 56.214s
+Step 0349 | Loss: 0.130674 | Recall@32: 1.000 | Sparsity: 0.830 | StepTime: 80.503s
+Step 0350 | Loss: 0.127129 | Recall@32: 1.000 | Sparsity: 0.886 | StepTime: 79.092s
+Step 0351 | Loss: 0.133769 | Recall@32: 1.000 | Sparsity: 0.781 | StepTime: 64.355s
+Step 0352 | Loss: 0.128322 | Recall@32: 1.000 | Sparsity: 0.868 | StepTime: 68.794s
+Step 0353 | Loss: 0.133124 | Recall@32: 1.000 | Sparsity: 0.787 | StepTime: 47.544s
+Step 0354 | Loss: 0.129890 | Recall@32: 1.000 | Sparsity: 0.842 | StepTime: 45.874s
+Step 0355 | Loss: 0.132020 | Recall@32: 1.000 | Sparsity: 0.811 | StepTime: 62.672s
+Step 0356 | Loss: 0.132677 | Recall@32: 1.000 | Sparsity: 0.800 | StepTime: 60.069s
+Step 0357 | Loss: 0.131724 | Recall@32: 1.000 | Sparsity: 0.812 | StepTime: 47.937s
+Step 0358 | Loss: 0.127555 | Recall@32: 1.000 | Sparsity: 0.882 | StepTime: 73.810s
+Step 0359 | Loss: 0.130432 | Recall@32: 1.000 | Sparsity: 0.834 | StepTime: 62.948s
+Step 0360 | Loss: 0.133519 | Recall@32: 1.000 | Sparsity: 0.776 | StepTime: 42.868s
+Saved checkpoint: checkpoints/c2fab_weights_step_360.pt
+Step 0361 | Loss: 0.126957 | Recall@32: 1.000 | Sparsity: 0.892 | StepTime: 64.516s
+Step 0362 | Loss: 0.127322 | Recall@32: 1.000 | Sparsity: 0.882 | StepTime: 55.544s
+Step 0363 | Loss: 0.131125 | Recall@32: 1.000 | Sparsity: 0.826 | StepTime: 67.380s
+Step 0364 | Loss: 0.133292 | Recall@32: 1.000 | Sparsity: 0.787 | StepTime: 64.470s
+Step 0365 | Loss: 0.129229 | Recall@32: 1.000 | Sparsity: 0.852 | StepTime: 59.584s
+Step 0366 | Loss: 0.129880 | Recall@32: 1.000 | Sparsity: 0.842 | StepTime: 47.400s
+Step 0367 | Loss: 0.132670 | Recall@32: 1.000 | Sparsity: 0.792 | StepTime: 55.208s
+Step 0368 | Loss: 0.132015 | Recall@32: 1.000 | Sparsity: 0.805 | StepTime: 48.144s
+Step 0369 | Loss: 0.133107 | Recall@32: 1.000 | Sparsity: 0.785 | StepTime: 46.881s
+Step 0370 | Loss: 0.128890 | Recall@32: 1.000 | Sparsity: 0.867 | StepTime: 55.827s
+Step 0371 | Loss: 0.131091 | Recall@32: 1.000 | Sparsity: 0.821 | StepTime: 75.328s
+Step 0372 | Loss: 0.128888 | Recall@32: 1.000 | Sparsity: 0.867 | StepTime: 82.326s
+Step 0373 | Loss: 0.128092 | Recall@32: 1.000 | Sparsity: 0.876 | StepTime: 87.933s
+Step 0374 | Loss: 0.129221 | Recall@32: 1.000 | Sparsity: 0.852 | StepTime: 92.913s
+Step 0375 | Loss: 0.132280 | Recall@32: 1.000 | Sparsity: 0.806 | StepTime: 76.015s
+Step 0376 | Loss: 0.129824 | Recall@32: 1.000 | Sparsity: 0.842 | StepTime: 64.534s
+Step 0377 | Loss: 0.132575 | Recall@32: 1.000 | Sparsity: 0.793 | StepTime: 81.980s
+Step 0378 | Loss: 0.128973 | Recall@32: 1.000 | Sparsity: 0.862 | StepTime: 81.324s
+Step 0379 | Loss: 0.134393 | Recall@32: 1.000 | Sparsity: 0.762 | StepTime: 65.718s
+Step 0380 | Loss: 0.132320 | Recall@32: 1.000 | Sparsity: 0.799 | StepTime: 77.244s
+Saved checkpoint: checkpoints/c2fab_weights_step_380.pt
+Step 0381 | Loss: 0.129545 | Recall@32: 1.000 | Sparsity: 0.848 | StepTime: 86.741s
+Step 0382 | Loss: 0.132655 | Recall@32: 1.000 | Sparsity: 0.800 | StepTime: 79.449s
+Step 0383 | Loss: 0.127143 | Recall@32: 1.000 | Sparsity: 0.890 | StepTime: 65.347s
+Step 0384 | Loss: 0.129819 | Recall@32: 1.000 | Sparsity: 0.845 | StepTime: 58.792s
+Step 0385 | Loss: 0.132568 | Recall@32: 1.000 | Sparsity: 0.793 | StepTime: 72.523s
+Step 0386 | Loss: 0.130018 | Recall@32: 1.000 | Sparsity: 0.844 | StepTime: 58.429s
+Step 0387 | Loss: 0.129056 | Recall@32: 1.000 | Sparsity: 0.860 | StepTime: 62.008s
+Step 0388 | Loss: 0.135079 | Recall@32: 1.000 | Sparsity: 0.753 | StepTime: 67.077s
+Step 0389 | Loss: 0.132252 | Recall@32: 1.000 | Sparsity: 0.799 | StepTime: 61.301s
+Step 0390 | Loss: 0.127220 | Recall@32: 1.000 | Sparsity: 0.885 | StepTime: 73.072s
+Step 0391 | Loss: 0.134691 | Recall@32: 1.000 | Sparsity: 0.753 | StepTime: 66.049s
+Step 0392 | Loss: 0.134749 | Recall@32: 1.000 | Sparsity: 0.761 | StepTime: 80.957s
+Step 0393 | Loss: 0.130199 | Recall@32: 1.000 | Sparsity: 0.837 | StepTime: 80.405s
+Step 0394 | Loss: 0.132258 | Recall@32: 1.000 | Sparsity: 0.800 | StepTime: 71.336s
+Step 0395 | Loss: 0.130927 | Recall@32: 1.000 | Sparsity: 0.827 | StepTime: 64.743s
+Step 0396 | Loss: 0.133694 | Recall@32: 1.000 | Sparsity: 0.774 | StepTime: 67.954s
+Step 0397 | Loss: 0.127005 | Recall@32: 1.000 | Sparsity: 0.892 | StepTime: 96.918s
+Step 0398 | Loss: 0.135008 | Recall@32: 1.000 | Sparsity: 0.754 | StepTime: 82.874s
+Step 0399 | Loss: 0.130853 | Recall@32: 1.000 | Sparsity: 0.826 | StepTime: 75.693s
+Step 0400 | Loss: 0.129021 | Recall@32: 1.000 | Sparsity: 0.855 | StepTime: 67.442s
+Saved checkpoint: checkpoints/c2fab_weights_step_400.pt
+Step 0401 | Loss: 0.134432 | Recall@32: 1.000 | Sparsity: 0.760 | StepTime: 90.370s
+Step 0402 | Loss: 0.133720 | Recall@32: 1.000 | Sparsity: 0.779 | StepTime: 69.861s
+Step 0403 | Loss: 0.128259 | Recall@32: 1.000 | Sparsity: 0.873 | StepTime: 62.360s
+Step 0404 | Loss: 0.129909 | Recall@32: 1.000 | Sparsity: 0.839 | StepTime: 52.482s
+Step 0405 | Loss: 0.128525 | Recall@32: 1.000 | Sparsity: 0.866 | StepTime: 59.960s
+Step 0406 | Loss: 0.129611 | Recall@32: 1.000 | Sparsity: 0.851 | StepTime: 60.235s
+Traceback (most recent call last):
+  File "/Users/marlonmoenius/c2fab/src/train_overnight.py", line 323, in <module>
+    train_overnight(steps=1000, checkpoint_every=20)
+  File "/Users/marlonmoenius/c2fab/src/train_overnight.py", line 227, in train_overnight
+    layer_22_states = _extract_layer22_states(model, input_ids.unsqueeze(0))  # [1, 3500, hidden_dim]
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/marlonmoenius/c2fab/src/train_overnight.py", line 141, in _extract_layer22_states
+    _ = model(input_ids=input_ids_batch, use_cache=False)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/marlonmoenius/c2fab/venv/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1776, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/marlonmoenius/c2fab/venv/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1787, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/marlonmoenius/c2fab/venv/lib/python3.11/site-packages/transformers/utils/generic.py", line 841, in wrapper
+    output = func(self, *args, **kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/marlonmoenius/c2fab/venv/lib/python3.11/site-packages/transformers/models/ministral/modeling_ministral.py", line 474, in forward
+    outputs: BaseModelOutputWithPast = self.model(
+                                       ^^^^^^^^^^^
+  File "/Users/marlonmoenius/c2fab/venv/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1776, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/marlonmoenius/c2fab/venv/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1787, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/marlonmoenius/c2fab/venv/lib/python3.11/site-packages/transformers/utils/generic.py", line 915, in wrapper
+    output = func(self, *args, **kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/marlonmoenius/c2fab/venv/lib/python3.11/site-packages/transformers/utils/output_capturing.py", line 253, in wrapper
+    outputs = func(self, *args, **kwargs)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/marlonmoenius/c2fab/venv/lib/python3.11/site-packages/transformers/models/ministral/modeling_ministral.py", line 409, in forward
+    hidden_states = decoder_layer(
+                    ^^^^^^^^^^^^^^
+  File "/Users/marlonmoenius/c2fab/venv/lib/python3.11/site-packages/transformers/modeling_layers.py", line 93, in __call__
+    return super().__call__(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/marlonmoenius/c2fab/venv/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1776, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/marlonmoenius/c2fab/venv/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1787, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/marlonmoenius/c2fab/venv/lib/python3.11/site-packages/transformers/models/ministral/modeling_ministral.py", line 249, in forward
+    hidden_states = self.mlp(hidden_states)
+                    ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/marlonmoenius/c2fab/venv/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1776, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/marlonmoenius/c2fab/venv/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1787, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/marlonmoenius/c2fab/venv/lib/python3.11/site-packages/transformers/models/ministral/modeling_ministral.py", line 47, in forward
+    down_proj = self.down_proj(self.act_fn(self.gate_proj(x)) * self.up_proj(x))
+                               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/marlonmoenius/c2fab/venv/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1776, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/marlonmoenius/c2fab/venv/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1787, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/marlonmoenius/c2fab/venv/lib/python3.11/site-packages/transformers/activations.py", line 103, in forward
+    return nn.functional.silu(input)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/marlonmoenius/c2fab/venv/lib/python3.11/site-packages/torch/nn/functional.py", line 2395, in silu
+    return torch._C._nn.silu(input)
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+KeyboardInterrupt

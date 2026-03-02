@@ -34,21 +34,46 @@ def _custom_c2fab_eager_attention_forward(
         module.head_dim
     )
 
-    c2fab_raw_bias = kwargs.pop("c2fab_raw_bias", None)
+    c2fab_bias_2d = kwargs.pop("c2fab_bias_2d", None)
     c2fab_layer_alpha = kwargs.pop("c2fab_layer_alpha", None)
-    if c2fab_raw_bias is not None and c2fab_layer_alpha is not None:
-        # c2fab_raw_bias:[batch_size, seq_len] -> [batch_size, heads, q_len, kv_len]
+    if c2fab_bias_2d is not None and c2fab_layer_alpha is not None:
+        # c2fab_bias_2d:[batch_size, q_len_bias, kv_len_bias]
+        q_len = attn_weights.shape[-2]
         kv_len = attn_weights.shape[-1]
-        if c2fab_raw_bias.shape[-1] != kv_len:
-            if c2fab_raw_bias.shape[-1] > kv_len:
-                c2fab_raw_bias = c2fab_raw_bias[..., -kv_len:]
+        if c2fab_bias_2d.ndim != 3:
+            raise ValueError(
+                f"c2fab_bias_2d must be rank-3 [batch,q,kv], got shape {tuple(c2fab_bias_2d.shape)}."
+            )
+
+        if c2fab_bias_2d.shape[-2] != q_len:
+            if c2fab_bias_2d.shape[-2] > q_len:
+                c2fab_bias_2d = c2fab_bias_2d[:, -q_len:, :]
             else:
-                pad = torch.zeros(
-                    (c2fab_raw_bias.shape[0], kv_len - c2fab_raw_bias.shape[-1]),
-                    dtype=c2fab_raw_bias.dtype,
-                    device=c2fab_raw_bias.device,
+                q_pad = torch.zeros(
+                    (
+                        c2fab_bias_2d.shape[0],
+                        q_len - c2fab_bias_2d.shape[-2],
+                        c2fab_bias_2d.shape[-1],
+                    ),
+                    dtype=c2fab_bias_2d.dtype,
+                    device=c2fab_bias_2d.device,
                 )
-                c2fab_raw_bias = torch.cat([pad, c2fab_raw_bias], dim=-1)
+                c2fab_bias_2d = torch.cat([q_pad, c2fab_bias_2d], dim=-2)
+
+        if c2fab_bias_2d.shape[-1] != kv_len:
+            if c2fab_bias_2d.shape[-1] > kv_len:
+                c2fab_bias_2d = c2fab_bias_2d[..., -kv_len:]
+            else:
+                k_pad = torch.zeros(
+                    (
+                        c2fab_bias_2d.shape[0],
+                        c2fab_bias_2d.shape[1],
+                        kv_len - c2fab_bias_2d.shape[-1],
+                    ),
+                    dtype=c2fab_bias_2d.dtype,
+                    device=c2fab_bias_2d.device,
+                )
+                c2fab_bias_2d = torch.cat([k_pad, c2fab_bias_2d], dim=-1)
 
         if c2fab_layer_alpha.numel() != attn_weights.shape[1]:
             raise ValueError(
@@ -56,9 +81,11 @@ def _custom_c2fab_eager_attention_forward(
                 f"expected {attn_weights.shape[1]}, got {c2fab_layer_alpha.numel()}."
             )
 
-        bias = c2fab_raw_bias.unsqueeze(1).unsqueeze(1)  # [batch_size, 1, 1, kv_len]
+        bias = c2fab_bias_2d.unsqueeze(1)  # [batch_size, 1, q_len, kv_len]
         head_alpha = c2fab_layer_alpha.view(1, -1, 1, 1)  # [1, num_q_heads, 1, 1]
         bias = (bias * head_alpha).to(dtype=attn_weights.dtype, device=attn_weights.device)
+        # Keep patched logits in a numerically safe range.
+        bias = torch.clamp(bias, min=-8.0, max=8.0)
         attn_weights = attn_weights + bias
 
     if attention_mask is not None:
@@ -112,18 +139,36 @@ def custom_c2fab_forward(
             key_states, value_states, self.layer_idx, cache_kwargs
         )
 
-    heads_param = next(self.c2fab_heads.parameters())
-    heads_input = hidden_states.to(device=heads_param.device, dtype=heads_param.dtype)
-    Phi_u, R_q, _ = self.c2fab_heads(heads_input, heads_input)
-    raw_bias = (R_q * Phi_u).sum(dim=-1)  # raw_bias:[batch_size, seq_len]
     layer_alpha = self.c2fab_heads.alphas[self.layer_idx - 32]  # [num_q_heads]
-
-    attention_interface: Callable = ALL_ATTENTION_FUNCTIONS.get_interface(
+    native_attention_interface: Callable = ALL_ATTENTION_FUNCTIONS.get_interface(
         self.config._attn_implementation, _custom_c2fab_eager_attention_forward
     )
-    attention_interface = _custom_c2fab_eager_attention_forward
 
-    attn_output, attn_weights = attention_interface(
+    # True ablation / no-op fast path:
+    # when alpha is exactly zero across heads, preserve vanilla attention behavior
+    # (same attention backend and no extra C2FAB compute).
+    if torch.count_nonzero(layer_alpha).item() == 0:
+        attn_output, attn_weights = native_attention_interface(
+            self,
+            query_states,
+            key_states,
+            value_states,
+            attention_mask,
+            dropout=0.0 if not self.training else self.attention_dropout,
+            scaling=self.scaling,
+            sliding_window=self.sliding_window,  # main diff with Llama
+            **kwargs,
+        )
+        attn_output = attn_output.reshape(*input_shape, -1).contiguous()
+        attn_output = self.o_proj(attn_output)
+        return attn_output, attn_weights
+
+    heads_param = next(self.c2fab_heads.parameters())
+    heads_input = hidden_states.to(device=heads_param.device, dtype=heads_param.dtype)
+    Phi_u, R_q, _ = self.c2fab_heads(heads_input, heads_input, use_bidirectional=True)
+    raw_bias = torch.einsum("bqd,bud->bqu", R_q, Phi_u)  # raw_bias:[batch_size, q_len, kv_len]
+
+    attn_output, attn_weights = _custom_c2fab_eager_attention_forward(
         self,
         query_states,
         key_states,
@@ -132,7 +177,7 @@ def custom_c2fab_forward(
         dropout=0.0 if not self.training else self.attention_dropout,
         scaling=self.scaling,
         sliding_window=self.sliding_window,  # main diff with Llama
-        c2fab_raw_bias=raw_bias,
+        c2fab_bias_2d=raw_bias,
         c2fab_layer_alpha=layer_alpha,
         **kwargs,
     )
@@ -162,7 +207,10 @@ def apply_c2fab_patch(
                 f"target layer {layer_idx} is out of range for model with {layer_count} layers."
             )
 
-    model_device = next(model.parameters()).device
+    if hasattr(model, "get_input_embeddings") and model.get_input_embeddings() is not None:
+        model_device = model.get_input_embeddings().weight.device
+    else:
+        model_device = next(model.parameters()).device
     trained_heads_module = trained_heads_module.to(model_device)
 
     for layer_idx in target_layers:
