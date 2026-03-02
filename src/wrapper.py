@@ -30,6 +30,13 @@ class ChargeFieldMinistral:
                 return emb.weight.device
         return next(model.parameters()).device
 
+    @staticmethod
+    def _preferred_dtype() -> torch.dtype:
+        # bfloat16 on MPS commonly forces CPU/offload; float16 is the faster path.
+        if torch.backends.mps.is_available():
+            return torch.float16
+        return torch.bfloat16
+
     @classmethod
     def from_pretrained(
         cls,
@@ -37,6 +44,8 @@ class ChargeFieldMinistral:
         checkpoint_path: str | None = None,
         force_alpha: float | None = None,
     ) -> "ChargeFieldMinistral":
+        preferred_dtype = cls._preferred_dtype()
+
         def _load_tokenizer(source: str, *, local_files_only: bool):
             # For offline/air-gapped runs, slow tokenizer avoids extra
             # fast-tokenizer metadata calls in some transformers versions.
@@ -56,7 +65,7 @@ class ChargeFieldMinistral:
             tokenizer = _load_tokenizer(model_id, local_files_only=False)
             model = AutoModelForCausalLM.from_pretrained(
                 model_id,
-                dtype=torch.bfloat16,
+                dtype=preferred_dtype,
                 device_map="auto",
             )
         except Exception as online_exc:
@@ -76,7 +85,7 @@ class ChargeFieldMinistral:
                 tokenizer = _load_tokenizer(local_snapshot, local_files_only=True)
                 model = AutoModelForCausalLM.from_pretrained(
                     local_snapshot,
-                    dtype=torch.bfloat16,
+                    dtype=preferred_dtype,
                     device_map="auto",
                     local_files_only=True,
                 )

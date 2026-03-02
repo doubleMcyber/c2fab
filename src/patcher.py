@@ -139,18 +139,36 @@ def custom_c2fab_forward(
             key_states, value_states, self.layer_idx, cache_kwargs
         )
 
+    layer_alpha = self.c2fab_heads.alphas[self.layer_idx - 32]  # [num_q_heads]
+    native_attention_interface: Callable = ALL_ATTENTION_FUNCTIONS.get_interface(
+        self.config._attn_implementation, _custom_c2fab_eager_attention_forward
+    )
+
+    # True ablation / no-op fast path:
+    # when alpha is exactly zero across heads, preserve vanilla attention behavior
+    # (same attention backend and no extra C2FAB compute).
+    if torch.count_nonzero(layer_alpha).item() == 0:
+        attn_output, attn_weights = native_attention_interface(
+            self,
+            query_states,
+            key_states,
+            value_states,
+            attention_mask,
+            dropout=0.0 if not self.training else self.attention_dropout,
+            scaling=self.scaling,
+            sliding_window=self.sliding_window,  # main diff with Llama
+            **kwargs,
+        )
+        attn_output = attn_output.reshape(*input_shape, -1).contiguous()
+        attn_output = self.o_proj(attn_output)
+        return attn_output, attn_weights
+
     heads_param = next(self.c2fab_heads.parameters())
     heads_input = hidden_states.to(device=heads_param.device, dtype=heads_param.dtype)
     Phi_u, R_q, _ = self.c2fab_heads(heads_input, heads_input, use_bidirectional=True)
     raw_bias = torch.einsum("bqd,bud->bqu", R_q, Phi_u)  # raw_bias:[batch_size, q_len, kv_len]
-    layer_alpha = self.c2fab_heads.alphas[self.layer_idx - 32]  # [num_q_heads]
 
-    attention_interface: Callable = ALL_ATTENTION_FUNCTIONS.get_interface(
-        self.config._attn_implementation, _custom_c2fab_eager_attention_forward
-    )
-    attention_interface = _custom_c2fab_eager_attention_forward
-
-    attn_output, attn_weights = attention_interface(
+    attn_output, attn_weights = _custom_c2fab_eager_attention_forward(
         self,
         query_states,
         key_states,

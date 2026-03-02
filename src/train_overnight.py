@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import argparse
 import os
 import random
 import time
@@ -23,6 +24,13 @@ else:
     from .modules import C2FAB_Heads, infonce_loss
 
 
+DEFAULT_CONTEXT_LEN = 32768
+DEFAULT_MIN_TOKENS = 24000
+DEFAULT_MAX_TOKENS = 32768
+DEFAULT_NUM_EXAMPLES = 12
+DEFAULT_MAX_CACHE_GB = 8.0
+
+
 def _pick_device() -> torch.device:
     if torch.backends.mps.is_available():
         return torch.device("mps")
@@ -33,6 +41,18 @@ def _pick_device() -> torch.device:
 
 def _llm_dtype_for_device(device: torch.device) -> torch.dtype:
     return torch.float16 if device.type == "mps" else torch.bfloat16
+
+
+def _load_tokenizer_with_fix(model_id: str, *, local_files_only: bool = False):
+    kwargs = {"local_files_only": local_files_only}
+    try:
+        return AutoTokenizer.from_pretrained(
+            model_id,
+            fix_mistral_regex=True,
+            **kwargs,
+        )
+    except TypeError:
+        return AutoTokenizer.from_pretrained(model_id, **kwargs)
 
 
 def _recall_at_k(
@@ -79,14 +99,14 @@ def _pad_or_trim_context(
 def pre_generate_examples(
     tokenizer,
     *,
-    num_examples: int = 200,
-    min_tokens: int = 1500,
-    max_tokens: int = 3500,
-    context_len: int = 3500,
-) -> list[tuple[torch.Tensor, torch.Tensor, torch.Tensor]]:
+    num_examples: int = DEFAULT_NUM_EXAMPLES,
+    min_tokens: int = DEFAULT_MIN_TOKENS,
+    max_tokens: int = DEFAULT_MAX_TOKENS,
+    context_len: int = DEFAULT_CONTEXT_LEN,
+) -> list[tuple[torch.Tensor, torch.Tensor]]:
     """
     Fast pre-generation only (no model forward):
-    stores (input_ids_padded_3500, query_ids, evidence_mask_padded_3500) on CPU.
+    stores (input_ids_padded, evidence_mask_padded) on CPU.
     """
     if tokenizer.pad_token_id is not None:
         pad_id = int(tokenizer.pad_token_id)
@@ -96,9 +116,9 @@ def pre_generate_examples(
         pad_id = 0
 
     t0 = time.time()
-    dataset: list[tuple[torch.Tensor, torch.Tensor, torch.Tensor]] = []
+    dataset: list[tuple[torch.Tensor, torch.Tensor]] = []
     for _ in range(num_examples):
-        input_ids, query_ids, evidence_mask = generate_synthetic_example(
+        input_ids, _query_ids, evidence_mask = generate_synthetic_example(
             tokenizer,
             min_tokens=min_tokens,
             max_tokens=max_tokens,
@@ -109,7 +129,7 @@ def pre_generate_examples(
             target_len=context_len,
             pad_id=pad_id,
         )
-        dataset.append((input_ids, query_ids.cpu(), evidence_mask))
+        dataset.append((input_ids, evidence_mask))
 
     elapsed = time.time() - t0
     print(
@@ -147,12 +167,81 @@ def _extract_layer22_states(
     return saved_hidden_states["layer_22"]
 
 
+def _max_examples_for_cache_budget(
+    *,
+    context_len: int,
+    hidden_dim: int,
+    cache_dtype: torch.dtype,
+    max_cache_gb: float,
+    requested_examples: int,
+) -> int:
+    elem_size = torch.tensor([], dtype=cache_dtype).element_size()
+    bytes_per_example = context_len * hidden_dim * elem_size
+    budget_bytes = int(max_cache_gb * (1024**3))
+    max_examples = max(1, budget_bytes // max(1, bytes_per_example))
+    return max(1, min(requested_examples, max_examples))
+
+
+def _precompute_layer22_cache(
+    *,
+    model,
+    dataset: list[tuple[torch.Tensor, torch.Tensor]],
+    device: torch.device,
+    cache_dtype: torch.dtype = torch.float16,
+) -> list[tuple[torch.Tensor, torch.Tensor]]:
+    """
+    One-time base-model pass to cache layer-22 hidden states on CPU.
+
+    Returns:
+        list[(layer22_states_cpu[seq_len, hidden_dim], evidence_mask_cpu[seq_len])]
+    """
+    cached: list[tuple[torch.Tensor, torch.Tensor]] = []
+    t0 = time.time()
+    total = len(dataset)
+    for idx, (input_ids_cpu, evidence_mask_cpu) in enumerate(dataset, start=1):
+        input_ids = input_ids_cpu.to(device=device, dtype=torch.long).unsqueeze(0)
+        layer_22_states = _extract_layer22_states(model, input_ids)  # [1, seq_len, hidden_dim]
+        layer_22_states_cpu = (
+            layer_22_states.squeeze(0).to(dtype=cache_dtype, device="cpu").contiguous()
+        )
+        cached.append((layer_22_states_cpu, evidence_mask_cpu.contiguous()))
+        if idx == 1 or idx % 5 == 0 or idx == total:
+            print(f"Cached layer-22 states: {idx}/{total}")
+        del input_ids, layer_22_states
+
+    elapsed = time.time() - t0
+    print(f"Precomputed layer-22 cache for {total} examples in {elapsed:.2f}s.")
+    return cached
+
+
+def _cleanup_base_model(model) -> None:
+    del model
+    if torch.cuda.is_available():
+        torch.cuda.empty_cache()
+    if torch.backends.mps.is_available() and hasattr(torch.mps, "empty_cache"):
+        torch.mps.empty_cache()
+
+
 def train_overnight(
     *,
     steps: int = 1000,
     checkpoint_every: int = 20,
     checkpoint_dir: str = "checkpoints",
+    context_len: int = DEFAULT_CONTEXT_LEN,
+    min_tokens: int = DEFAULT_MIN_TOKENS,
+    max_tokens: int = DEFAULT_MAX_TOKENS,
+    num_examples: int = DEFAULT_NUM_EXAMPLES,
+    max_cache_gb: float = DEFAULT_MAX_CACHE_GB,
 ) -> None:
+    if min_tokens > max_tokens:
+        raise ValueError(
+            f"min_tokens must be <= max_tokens, got min_tokens={min_tokens}, max_tokens={max_tokens}."
+        )
+    if context_len <= 0:
+        raise ValueError(f"context_len must be positive, got {context_len}.")
+    if num_examples <= 0:
+        raise ValueError(f"num_examples must be positive, got {num_examples}.")
+
     device = _pick_device()
     torch.manual_seed(42)
     random.seed(42)
@@ -162,7 +251,7 @@ def train_overnight(
     print(f"Using device={device}, llm_dtype={llm_dtype}")
 
     try:
-        tokenizer = AutoTokenizer.from_pretrained(MODEL_ID)
+        tokenizer = _load_tokenizer_with_fix(MODEL_ID, local_files_only=False)
         model = AutoModelForCausalLM.from_pretrained(
             MODEL_ID,
             dtype=llm_dtype,
@@ -172,7 +261,7 @@ def train_overnight(
             "Online Hugging Face load failed "
             f"({type(exc).__name__}: {exc}). Retrying with local cache only..."
         )
-        tokenizer = AutoTokenizer.from_pretrained(MODEL_ID, local_files_only=True)
+        tokenizer = _load_tokenizer_with_fix(MODEL_ID, local_files_only=True)
         model = AutoModelForCausalLM.from_pretrained(
             MODEL_ID,
             dtype=llm_dtype,
@@ -187,13 +276,35 @@ def train_overnight(
     heads = C2FAB_Heads(hidden_dim=4096, D=8, num_layers=4, num_q_heads=32).to(device)
     optimizer = AdamW(heads.parameters(), lr=1e-3)
 
+    hidden_dim = int(getattr(model.config, "hidden_size", 4096))
+    effective_examples = _max_examples_for_cache_budget(
+        context_len=context_len,
+        hidden_dim=hidden_dim,
+        cache_dtype=torch.float16,
+        max_cache_gb=max_cache_gb,
+        requested_examples=num_examples,
+    )
+    if effective_examples < num_examples:
+        print(
+            f"Reducing num_examples from {num_examples} to {effective_examples} "
+            f"to respect hidden-state cache budget ({max_cache_gb:.1f} GB)."
+        )
+
     dataset = pre_generate_examples(
         tokenizer=tokenizer,
-        num_examples=200,
-        min_tokens=1500,
-        max_tokens=3500,
-        context_len=3500,
+        num_examples=effective_examples,
+        min_tokens=min_tokens,
+        max_tokens=max_tokens,
+        context_len=context_len,
     )
+    feature_cache = _precompute_layer22_cache(
+        model=model,
+        dataset=dataset,
+        device=device,
+        cache_dtype=torch.float16,
+    )
+    _cleanup_base_model(model)
+    del dataset
 
     run = wandb.init(
         project="c2fab-hackathon",
@@ -205,7 +316,11 @@ def train_overnight(
             "model_id": MODEL_ID,
             "steps": steps,
             "checkpoint_every": checkpoint_every,
-            "context_len": 3500,
+            "context_len": context_len,
+            "min_tokens": min_tokens,
+            "max_tokens": max_tokens,
+            "num_examples": effective_examples,
+            "max_cache_gb": max_cache_gb,
             "D": 8,
             "bidirectional": True,
             "l1_weight": 0.01,
@@ -220,19 +335,17 @@ def train_overnight(
     for step in range(1, steps + 1):
         step_t0 = time.time()
 
-        input_ids_cpu, _query_ids_cpu, evidence_mask_cpu = random.choice(dataset)
-        input_ids = input_ids_cpu.to(device=device, dtype=torch.long)  # [3500]
-        evidence_mask = evidence_mask_cpu.to(device=device, dtype=torch.long)  # [3500]
-
-        layer_22_states = _extract_layer22_states(model, input_ids.unsqueeze(0))  # [1, 3500, hidden_dim]
-        if layer_22_states.dim() != 3:
+        layer_22_states_cpu, evidence_mask_cpu = random.choice(feature_cache)
+        evidence_mask = evidence_mask_cpu.to(device=device, dtype=torch.long)
+        layer_22_states = layer_22_states_cpu.unsqueeze(0).to(device=device, dtype=torch.float32)
+        if layer_22_states.dim() != 3:  # [1, seq_len, hidden_dim]
             raise RuntimeError(
                 f"Expected layer_22_states rank-3, got shape {tuple(layer_22_states.shape)}."
             )
 
         # Use context hidden states for both field source and single-token receptor query.
-        x_u = layer_22_states.to(dtype=torch.float32)  # [1, 3500, hidden_dim]
-        x_q = layer_22_states[:, -1:, :].to(dtype=torch.float32)  # [1, 1, hidden_dim]
+        x_u = layer_22_states
+        x_q = layer_22_states[:, -1:, :]
 
         Phi_total, R_q, C_u = heads(x_u, x_q, use_bidirectional=True)
         bias_scores = (R_q * Phi_total).sum(dim=-1)  # [1, 3500]
@@ -297,7 +410,6 @@ def train_overnight(
             print(f"Saved checkpoint: {ckpt_file}")
 
         del (
-            input_ids,
             evidence_mask,
             layer_22_states,
             x_u,
@@ -319,5 +431,65 @@ def train_overnight(
     wandb.finish()
 
 
+def _parse_args() -> argparse.Namespace:
+    parser = argparse.ArgumentParser(
+        description="Train C2FAB heads with one-time layer22 cache precompute."
+    )
+    parser.add_argument("--steps", type=int, default=1000, help="Training steps.")
+    parser.add_argument(
+        "--checkpoint_every",
+        type=int,
+        default=20,
+        help="Checkpoint save interval in steps.",
+    )
+    parser.add_argument(
+        "--checkpoint_dir",
+        type=str,
+        default="checkpoints",
+        help="Directory for training checkpoints.",
+    )
+    parser.add_argument(
+        "--context_len",
+        type=int,
+        default=DEFAULT_CONTEXT_LEN,
+        help=f"Fixed context length after pad/trim (default: {DEFAULT_CONTEXT_LEN}).",
+    )
+    parser.add_argument(
+        "--min_tokens",
+        type=int,
+        default=DEFAULT_MIN_TOKENS,
+        help=f"Minimum synthetic context tokens (default: {DEFAULT_MIN_TOKENS}).",
+    )
+    parser.add_argument(
+        "--max_tokens",
+        type=int,
+        default=DEFAULT_MAX_TOKENS,
+        help=f"Maximum synthetic context tokens (default: {DEFAULT_MAX_TOKENS}).",
+    )
+    parser.add_argument(
+        "--num_examples",
+        type=int,
+        default=DEFAULT_NUM_EXAMPLES,
+        help=f"Requested number of pre-generated examples (default: {DEFAULT_NUM_EXAMPLES}).",
+    )
+    parser.add_argument(
+        "--max_cache_gb",
+        type=float,
+        default=DEFAULT_MAX_CACHE_GB,
+        help=f"CPU cache budget for layer22 states in GB (default: {DEFAULT_MAX_CACHE_GB}).",
+    )
+    return parser.parse_args()
+
+
 if __name__ == "__main__":
-    train_overnight(steps=1000, checkpoint_every=20)
+    args = _parse_args()
+    train_overnight(
+        steps=args.steps,
+        checkpoint_every=args.checkpoint_every,
+        checkpoint_dir=args.checkpoint_dir,
+        context_len=args.context_len,
+        min_tokens=args.min_tokens,
+        max_tokens=args.max_tokens,
+        num_examples=args.num_examples,
+        max_cache_gb=args.max_cache_gb,
+    )

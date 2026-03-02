@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import argparse
 import gc
 import random
 import re
@@ -22,12 +23,12 @@ else:
     from src.wrapper import ChargeFieldMinistral
 
 
-CONTEXT_LENGTH = 2500
+DEFAULT_CONTEXT_LENGTH = 32768
 NEEDLE_POSITIONS = ("early", "middle", "late")
-RUNS_PER_POSITION = 3
+DEFAULT_RUNS_PER_POSITION = 1
 CHECKPOINT_PATH = "checkpoints/c2fab_weights_step_400.pt"
 QUERY = "Question: What is the planetary defense shield frequency? Answer:"
-MAX_NEW_TOKENS = 16
+DEFAULT_MAX_NEW_TOKENS = 16
 
 FILLER_SENTENCES = [
     "The research council released an extensive memorandum describing civil engineering projects and policy revisions.",
@@ -68,11 +69,30 @@ def _make_filler(tokenizer, target_tokens: int) -> str:
     return " ".join(pieces)
 
 
+def _precompute_filler_token_lengths(tokenizer) -> list[int]:
+    return [
+        len(tokenizer(sentence, add_special_tokens=False)["input_ids"])
+        for sentence in FILLER_SENTENCES
+    ]
+
+
+def _make_filler_fast(target_tokens: int, filler_token_lengths: list[int]) -> str:
+    pieces: list[str] = []
+    token_count = 0
+    while token_count < target_tokens:
+        idx = random.randrange(len(FILLER_SENTENCES))
+        sentence = FILLER_SENTENCES[idx]
+        pieces.append(sentence)
+        token_count += filler_token_lengths[idx]
+    return " ".join(pieces)
+
+
 def _build_prompt(
     tokenizer,
     context_length: int,
     fact_sentence: str,
     needle_position: str,
+    filler_token_lengths: list[int] | None = None,
 ) -> str:
     position_to_fraction = {
         "early": 0.2,
@@ -86,8 +106,12 @@ def _build_prompt(
 
     left_target = int(context_length * position_to_fraction[needle_position])
     right_target = context_length - left_target
-    left = _make_filler(tokenizer, left_target)
-    right = _make_filler(tokenizer, right_target)
+    if filler_token_lengths is None:
+        left = _make_filler(tokenizer, left_target)
+        right = _make_filler(tokenizer, right_target)
+    else:
+        left = _make_filler_fast(left_target, filler_token_lengths)
+        right = _make_filler_fast(right_target, filler_token_lengths)
     return f"{left} {fact_sentence} {right}\n\n{QUERY}"
 
 
@@ -151,17 +175,18 @@ def _load_tokenizer(model_source: str):
 
 
 def _load_vanilla_model(model_source: str):
+    dtype = torch.float16 if torch.backends.mps.is_available() else torch.bfloat16
     try:
         model = AutoModelForCausalLM.from_pretrained(
             model_source,
-            dtype=torch.bfloat16,
+            dtype=dtype,
             device_map="auto",
             local_files_only=True,
         )
     except Exception:
         model = AutoModelForCausalLM.from_pretrained(
             model_source,
-            dtype=torch.bfloat16,
+            dtype=dtype,
             device_map="auto",
         )
     model.eval()
@@ -195,6 +220,7 @@ def _run_c2fab(model: ChargeFieldMinistral, prompt: str, max_new_tokens: int = 1
         prompt,
         max_new_tokens=max_new_tokens,
         do_sample=False,
+        use_cache=True,
     )
     return _extract_answer_segment(output)
 
@@ -278,15 +304,54 @@ def _print_summary(results: list[dict[str, object]]) -> None:
     print(_line())
 
 
+def _parse_args() -> argparse.Namespace:
+    parser = argparse.ArgumentParser(
+        description="Benchmark vanilla vs C2FAB on deterministic long-context retrieval trials."
+    )
+    parser.add_argument(
+        "--seed",
+        type=int,
+        default=1337,
+        help="Deterministic trial seed (default: 1337).",
+    )
+    parser.add_argument(
+        "--context_length",
+        type=int,
+        default=DEFAULT_CONTEXT_LENGTH,
+        help=f"Target filler token budget (default: {DEFAULT_CONTEXT_LENGTH}).",
+    )
+    parser.add_argument(
+        "--runs_per_position",
+        type=int,
+        default=DEFAULT_RUNS_PER_POSITION,
+        help=f"Trials per insertion position (default: {DEFAULT_RUNS_PER_POSITION}).",
+    )
+    parser.add_argument(
+        "--max_new_tokens",
+        type=int,
+        default=DEFAULT_MAX_NEW_TOKENS,
+        help=f"Generation budget per sample (default: {DEFAULT_MAX_NEW_TOKENS}).",
+    )
+    parser.add_argument(
+        "--force_alpha",
+        type=float,
+        default=2.0,
+        help="C2FAB alpha used in benchmark runs (default: 2.0).",
+    )
+    return parser.parse_args()
+
+
 def main() -> None:
+    args = _parse_args()
+
     if hasattr(sys.stdout, "reconfigure"):
         # Ensure progress lines are flushed when redirected to terminal logs.
         sys.stdout.reconfigure(line_buffering=True)
 
     hf_logging.set_verbosity_error()
 
-    random.seed(17)
-    torch.manual_seed(17)
+    random.seed(args.seed)
+    torch.manual_seed(args.seed)
 
     # Prefer local snapshot to avoid network/proxy interruptions.
     try:
@@ -296,23 +361,25 @@ def main() -> None:
 
     print(f"Loading tokenizer from: {model_source}")
     tokenizer = _load_tokenizer(model_source)
+    filler_token_lengths = _precompute_filler_token_lengths(tokenizer)
     results: list[dict[str, object]] = []
 
     print(
-        f"Preparing PoC runs: context={CONTEXT_LENGTH}, positions={list(NEEDLE_POSITIONS)}, "
-        f"runs_per_position={RUNS_PER_POSITION}"
+        f"Preparing PoC runs: context={args.context_length}, positions={list(NEEDLE_POSITIONS)}, "
+        f"runs_per_position={args.runs_per_position}, seed={args.seed}"
     )
     for position in NEEDLE_POSITIONS:
-        for run_idx in range(1, RUNS_PER_POSITION + 1):
+        for run_idx in range(1, args.runs_per_position + 1):
             target_mhz = random.randint(1000, 9999)
             fact_sentence = (
                 f"The planetary defense shield frequency is {target_mhz} MHz."
             )
             prompt = _build_prompt(
                 tokenizer=tokenizer,
-                context_length=CONTEXT_LENGTH,
+                context_length=args.context_length,
                 fact_sentence=fact_sentence,
                 needle_position=position,
+                filler_token_lengths=filler_token_lengths,
             )
             results.append(
                 {
@@ -336,7 +403,7 @@ def main() -> None:
             vanilla_model,
             tokenizer,
             row["prompt"],
-            max_new_tokens=MAX_NEW_TOKENS,
+            max_new_tokens=args.max_new_tokens,
         )
         vanilla_pred_mhz = _extract_first_mhz_candidate(vanilla_output)
         row["vanilla_output"] = vanilla_output
@@ -353,14 +420,14 @@ def main() -> None:
     c2fab_model = ChargeFieldMinistral.from_pretrained(
         model_id=model_source,
         checkpoint_path=CHECKPOINT_PATH,
-        force_alpha=2.0,
+        force_alpha=args.force_alpha,
     )
     print(f"C2FAB load time: {time.time() - c2fab_t0:.1f}s")
     for row in results:
         c2fab_output = _run_c2fab(
             c2fab_model,
             row["prompt"],
-            max_new_tokens=MAX_NEW_TOKENS,
+            max_new_tokens=args.max_new_tokens,
         )
         c2fab_pred_mhz = _extract_first_mhz_candidate(c2fab_output)
         row["c2fab_output"] = c2fab_output
