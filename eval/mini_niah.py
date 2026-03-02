@@ -1,15 +1,20 @@
 from __future__ import annotations
 
+import gc
 import random
 import sys
 from pathlib import Path
 
 import torch
+from huggingface_hub import snapshot_download
+from transformers import AutoModelForCausalLM, AutoTokenizer
 
 try:
     import matplotlib.pyplot as plt
+    from matplotlib.patches import Rectangle
 except ImportError:
     plt = None
+    Rectangle = None
 
 if __package__ in (None, ""):
     repo_root = Path(__file__).resolve().parents[1]
@@ -64,6 +69,177 @@ def build_needle_prompt(
         f"{right_filler}\n\n"
         f"{QUESTION_SUFFIX}"
     )
+
+
+def _input_device(model) -> torch.device:
+    if hasattr(model, "get_input_embeddings"):
+        emb = model.get_input_embeddings()
+        if emb is not None and hasattr(emb, "weight"):
+            return emb.weight.device
+    return next(model.parameters()).device
+
+
+def _load_vanilla_model_and_tokenizer(model_id: str):
+    def _load_tokenizer(source: str, *, local_files_only: bool):
+        kwargs = {"use_fast": False}
+        try:
+            return AutoTokenizer.from_pretrained(
+                source,
+                local_files_only=local_files_only,
+                fix_mistral_regex=True,
+                **kwargs,
+            )
+        except TypeError:
+            return AutoTokenizer.from_pretrained(
+                source,
+                local_files_only=local_files_only,
+                **kwargs,
+            )
+        except Exception:
+            return AutoTokenizer.from_pretrained(
+                source,
+                local_files_only=local_files_only,
+                **kwargs,
+            )
+
+    try:
+        tokenizer = _load_tokenizer(model_id, local_files_only=False)
+        model = AutoModelForCausalLM.from_pretrained(
+            model_id,
+            dtype=torch.bfloat16,
+            device_map="auto",
+        )
+    except Exception as online_exc:
+        try:
+            snapshot_path = snapshot_download(repo_id=model_id, local_files_only=True)
+        except Exception as snapshot_exc:
+            raise RuntimeError(
+                "Failed to load vanilla model/tokenizer online and no local snapshot was found.\n"
+                f"Online error: {type(online_exc).__name__}: {online_exc}\n"
+                f"Snapshot error: {type(snapshot_exc).__name__}: {snapshot_exc}"
+            ) from snapshot_exc
+
+        tokenizer = _load_tokenizer(snapshot_path, local_files_only=True)
+        model = AutoModelForCausalLM.from_pretrained(
+            snapshot_path,
+            dtype=torch.bfloat16,
+            device_map="auto",
+            local_files_only=True,
+        )
+
+    model.eval()
+    return model, tokenizer
+
+
+def _capture_last_query_attention_mean(
+    model,
+    tokenizer,
+    prompt: str,
+    layer_idx: int = 35,
+) -> torch.Tensor:
+    input_device = _input_device(model)
+    inputs = tokenizer(prompt, return_tensors="pt")
+    inputs = {k: v.to(input_device) for k, v in inputs.items()}
+    with torch.no_grad():
+        outputs = model(
+            **inputs,
+            use_cache=False,
+            output_attentions=True,
+            return_dict=True,
+        )
+
+    attentions = outputs.attentions
+    if attentions is None:
+        raise RuntimeError("Model did not return attentions. Ensure output_attentions=True.")
+    if layer_idx < 0 or layer_idx >= len(attentions):
+        raise IndexError(f"Layer index {layer_idx} out of bounds for {len(attentions)} layers.")
+
+    layer_attn = attentions[layer_idx]
+    if layer_attn is None:
+        raise RuntimeError(f"Attention tensor for layer {layer_idx} is None.")
+
+    # Extract last query token attention: [batch, heads, seq_len]
+    last_query = layer_attn[:, :, -1, :]
+    # Average across heads -> [batch, seq_len], then squeeze batch.
+    return last_query.mean(dim=1).squeeze(0).float().detach().cpu()
+
+
+def _save_attention_comparison_heatmap(
+    vanilla_attn: torch.Tensor,
+    c2fab_attn: torch.Tensor,
+    vanilla_evidence_positions: list[int],
+    c2fab_evidence_positions: list[int],
+    output_path: str = "c2fab_vs_vanilla_heatmap.png",
+) -> None:
+    if plt is None or Rectangle is None:
+        print("matplotlib is not installed; skipping attention heatmap plot.")
+        return
+    if not vanilla_evidence_positions or not c2fab_evidence_positions:
+        print("Could not locate evidence token span; skipping attention heatmap plot.")
+        return
+
+    v_arr = vanilla_attn.detach().cpu().numpy().reshape(1, -1)
+    c_arr = c2fab_attn.detach().cpu().numpy().reshape(1, -1)
+    vmax = float(max(v_arr.max(), c_arr.max()))
+    vmin = float(min(v_arr.min(), c_arr.min()))
+
+    fig, axes = plt.subplots(2, 1, figsize=(14, 4.8), sharex=False)
+
+    top_im = axes[0].imshow(
+        v_arr,
+        aspect="auto",
+        cmap="viridis",
+        interpolation="nearest",
+        vmin=vmin,
+        vmax=vmax,
+    )
+    axes[0].set_title("Vanilla Layer 35 Attention (Final Query Token)")
+    axes[0].set_ylabel("query=-1")
+    axes[0].set_yticks([])
+    v_start = min(vanilla_evidence_positions)
+    v_end = max(vanilla_evidence_positions)
+    axes[0].add_patch(
+        Rectangle(
+            (v_start - 0.5, -0.5),
+            (v_end - v_start + 1),
+            1.0,
+            fill=False,
+            edgecolor="red",
+            linewidth=2.0,
+        )
+    )
+
+    axes[1].imshow(
+        c_arr,
+        aspect="auto",
+        cmap="viridis",
+        interpolation="nearest",
+        vmin=vmin,
+        vmax=vmax,
+    )
+    axes[1].set_title("C2FAB Layer 35 Attention (Final Query Token)")
+    axes[1].set_ylabel("query=-1")
+    axes[1].set_yticks([])
+    axes[1].set_xlabel("Token Position")
+    c_start = min(c2fab_evidence_positions)
+    c_end = max(c2fab_evidence_positions)
+    axes[1].add_patch(
+        Rectangle(
+            (c_start - 0.5, -0.5),
+            (c_end - c_start + 1),
+            1.0,
+            fill=False,
+            edgecolor="red",
+            linewidth=2.0,
+        )
+    )
+
+    cbar = fig.colorbar(top_im, ax=axes, fraction=0.02, pad=0.02)
+    cbar.set_label("Attention Weight")
+    plt.tight_layout()
+    plt.savefig(output_path, dpi=220)
+    plt.close()
+    print(f"Saved attention heatmap to {output_path}")
 
 
 def _extract_charge_magnitudes(
@@ -231,15 +407,34 @@ def _generate_with_alpha(
 def main() -> None:
     random.seed(7)
 
+    print("Loading Vanilla Ministral for baseline attention...")
+    vanilla_model, vanilla_tokenizer = _load_vanilla_model_and_tokenizer(MODEL_ID)
+
+    print("Building Needle-in-a-Haystack prompt...")
+    prompt = build_needle_prompt(vanilla_tokenizer, target_filler_tokens=1000)
+
+    print("Capturing Vanilla Layer 35 attention (final query token)...")
+    vanilla_attn = _capture_last_query_attention_mean(
+        vanilla_model,
+        vanilla_tokenizer,
+        prompt,
+        layer_idx=35,
+    )
+    vanilla_evidence_positions = _get_evidence_token_positions(vanilla_tokenizer, prompt)
+
+    del vanilla_model
+    gc.collect()
+    if torch.cuda.is_available():
+        torch.cuda.empty_cache()
+    if hasattr(torch, "mps") and torch.backends.mps.is_available():
+        torch.mps.empty_cache()
+
     print("Loading ChargeFieldMinistral...")
     cf_model = ChargeFieldMinistral.from_pretrained(
         model_id=MODEL_ID,
         checkpoint_path="checkpoints/c2fab_weights_step_400.pt",
         force_alpha=2.0,
     )
-
-    print("Building Needle-in-a-Haystack prompt...")
-    prompt = build_needle_prompt(cf_model.tokenizer, target_filler_tokens=1000)
 
     print("Running generation...")
     model_output = _generate_with_alpha(
@@ -267,6 +462,22 @@ def main() -> None:
 
     print("\n=== Model Output ===")
     print(model_output)
+
+    print("\nCapturing C2FAB Layer 35 attention (final query token)...")
+    c2fab_attn = _capture_last_query_attention_mean(
+        cf_model.model,
+        cf_model.tokenizer,
+        prompt,
+        layer_idx=35,
+    )
+    c2fab_evidence_positions = _get_evidence_token_positions(cf_model.tokenizer, prompt)
+    _save_attention_comparison_heatmap(
+        vanilla_attn=vanilla_attn,
+        c2fab_attn=c2fab_attn,
+        vanilla_evidence_positions=vanilla_evidence_positions,
+        c2fab_evidence_positions=c2fab_evidence_positions,
+        output_path="c2fab_vs_vanilla_heatmap.png",
+    )
 
     print("\nComputing C2FAB charge magnitudes and bias diagnostics...")
     charge_magnitudes, raw_bias = _extract_charge_magnitudes(cf_model, prompt, layer_idx=32)
