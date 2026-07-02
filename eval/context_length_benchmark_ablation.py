@@ -46,6 +46,8 @@ DEFAULT_RUNS_PER_POSITION = 1
 CHECKPOINT_PATH = "checkpoints/c2fab_weights_step_400.pt"
 QUERY = "Question: What is the planetary defense shield frequency? Answer:"
 DEFAULT_MAX_NEW_TOKENS = 16
+DEFAULT_PREFILL_CHUNK_SIZE = 256
+CHUNKED_PREFILL_MIN_INPUT_TOKENS = 8192
 
 FILLER_SENTENCES = [
     "The research council released an extensive memorandum describing civil engineering projects and policy revisions.",
@@ -250,6 +252,65 @@ def _set_force_alpha(cf_model: ChargeFieldMinistral, alpha: float) -> None:
         cf_model.heads.alphas.data = torch.ones_like(cf_model.heads.alphas.data) * float(alpha)
 
 
+def _is_prefill_memory_error(exc: Exception) -> bool:
+    msg = str(exc).lower()
+    return ("invalid buffer size" in msg) or ("out of memory" in msg)
+
+
+def _chunked_prefill_greedy_generate(
+    model,
+    input_ids: torch.Tensor,
+    *,
+    max_new_tokens: int,
+    prefill_chunk_size: int,
+    eos_token_id: int | None,
+) -> torch.Tensor:
+    """
+    Memory-safe generation path:
+    prefill the prompt in chunks with KV cache, then decode greedily token-by-token.
+    Returns only newly generated token IDs with shape [1, new_len].
+    """
+    if prefill_chunk_size <= 0:
+        raise ValueError(f"prefill_chunk_size must be positive, got {prefill_chunk_size}.")
+
+    past_key_values = None
+    last_logits = None
+    with torch.no_grad():
+        for start in range(0, input_ids.shape[-1], prefill_chunk_size):
+            end = min(start + prefill_chunk_size, input_ids.shape[-1])
+            chunk_ids = input_ids[:, start:end]
+            outputs = model(
+                input_ids=chunk_ids,
+                past_key_values=past_key_values,
+                use_cache=True,
+                return_dict=True,
+            )
+            past_key_values = outputs.past_key_values
+            last_logits = outputs.logits[:, -1, :]
+
+        if last_logits is None:
+            raise RuntimeError("Chunked prefill failed to produce logits.")
+
+        generated_chunks: list[torch.Tensor] = []
+        for _ in range(max_new_tokens):
+            next_token = torch.argmax(last_logits, dim=-1, keepdim=True)
+            generated_chunks.append(next_token)
+            if eos_token_id is not None and bool(torch.all(next_token == eos_token_id)):
+                break
+            outputs = model(
+                input_ids=next_token,
+                past_key_values=past_key_values,
+                use_cache=True,
+                return_dict=True,
+            )
+            past_key_values = outputs.past_key_values
+            last_logits = outputs.logits[:, -1, :]
+
+    if not generated_chunks:
+        return input_ids.new_empty((input_ids.shape[0], 0), dtype=input_ids.dtype)
+    return torch.cat(generated_chunks, dim=-1)
+
+
 def _run_model_generate(
     model,
     tokenizer,
@@ -261,19 +322,44 @@ def _run_model_generate(
     device = _input_device(model)
     inputs = tokenizer(prompt, return_tensors="pt")
     inputs = {k: v.to(device) for k, v in inputs.items()}
-    with torch.no_grad():
-        generated_ids = model.generate(
-            **inputs,
-            max_new_tokens=max_new_tokens,
-            do_sample=False,
-            use_cache=use_cache,
-        )
+    input_ids = inputs["input_ids"]
 
-    full_text = _safe_decode(tokenizer, generated_ids[0])
-    answer_segment = _extract_answer_segment(full_text)
-    if answer_segment:
-        return answer_segment
-    return _decode_new_tokens(tokenizer, generated_ids, inputs["input_ids"].shape[-1])
+    should_use_chunked = use_cache and input_ids.shape[-1] >= CHUNKED_PREFILL_MIN_INPUT_TOKENS
+    if should_use_chunked:
+        new_tokens = _chunked_prefill_greedy_generate(
+            model,
+            input_ids,
+            max_new_tokens=max_new_tokens,
+            prefill_chunk_size=DEFAULT_PREFILL_CHUNK_SIZE,
+            eos_token_id=tokenizer.eos_token_id,
+        )
+        return _safe_decode(tokenizer, new_tokens[0]).strip()
+
+    try:
+        with torch.no_grad():
+            generated_ids = model.generate(
+                **inputs,
+                max_new_tokens=max_new_tokens,
+                do_sample=False,
+                use_cache=use_cache,
+            )
+    except RuntimeError as exc:
+        if not (use_cache and _is_prefill_memory_error(exc)):
+            raise
+        if torch.cuda.is_available():
+            torch.cuda.empty_cache()
+        if torch.backends.mps.is_available() and hasattr(torch.mps, "empty_cache"):
+            torch.mps.empty_cache()
+        new_tokens = _chunked_prefill_greedy_generate(
+            model,
+            input_ids,
+            max_new_tokens=max_new_tokens,
+            prefill_chunk_size=DEFAULT_PREFILL_CHUNK_SIZE,
+            eos_token_id=tokenizer.eos_token_id,
+        )
+        return _safe_decode(tokenizer, new_tokens[0]).strip()
+
+    return _decode_new_tokens(tokenizer, generated_ids, input_ids.shape[-1])
 
 
 def _snippet(text: str, max_len: int = 140) -> str:

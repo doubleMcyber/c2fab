@@ -1,6 +1,34 @@
 from __future__ import annotations
 
 import torch
+from torch.utils.checkpoint import checkpoint
+
+
+def _parallel_prefix_scan_core(
+    x: torch.Tensor,
+    lambdas: torch.Tensor,
+    initial_state: torch.Tensor,
+) -> torch.Tensor:
+    seq_len = x.shape[-2]
+    field_dim = x.shape[-1]
+    lambda_values = lambdas.view((1,) * (x.ndim - 2) + (1, field_dim))
+
+    # Each timestep is an affine map y -> a*y + b with:
+    # a=lambda, b=C_t.
+    # We run a Hillis-Steele parallel prefix scan on (a, b) using:
+    # (a2, b2) o (a1, b1) = (a2*a1, b2 + a2*b1).
+    a_scan = lambda_values.expand(x.shape).clone()  # a_scan:[..., seq_len, field_dim]
+    b_scan = x.clone()  # b_scan:[..., seq_len, field_dim]
+
+    offset = 1
+    while offset < seq_len:
+        a_prev = a_scan.clone()
+        b_prev = b_scan.clone()
+        a_scan[..., offset:, :] = a_prev[..., offset:, :] * a_prev[..., :-offset, :]
+        b_scan[..., offset:, :] = b_prev[..., offset:, :] + a_prev[..., offset:, :] * b_prev[..., :-offset, :]
+        offset <<= 1
+
+    return b_scan + a_scan * initial_state.unsqueeze(-2)
 
 
 def causal_iir_filter_parallel(
@@ -52,29 +80,22 @@ def causal_iir_filter_parallel(
             )
         init = initial_state.to(device=x.device, dtype=x.dtype)
     else:
-        init = None
+        init = torch.zeros(x.shape[:-2] + (field_dim,), device=x.device, dtype=x.dtype)
 
-    # Each timestep is an affine map y -> a*y + b with:
-    # a=lambda, b=C_t.
-    # We run a Hillis-Steele parallel prefix scan on (a, b) using:
-    # (a2, b2) o (a1, b1) = (a2*a1, b2 + a2*b1).
-    lambda_values = lambdas.to(device=x.device, dtype=x.dtype).view(
-        (1,) * (x.ndim - 2) + (1, field_dim)
+    lambdas_cast = lambdas.to(device=x.device, dtype=x.dtype)
+    needs_checkpoint = torch.is_grad_enabled() and (
+        x.requires_grad or lambdas_cast.requires_grad or init.requires_grad
     )
-    a_scan = lambda_values.expand(x.shape).clone()  # a_scan:[..., seq_len, field_dim]
-    b_scan = x.clone()  # b_scan:[..., seq_len, field_dim]
-
-    offset = 1
-    while offset < seq_len:
-        a_prev = a_scan.clone()
-        b_prev = b_scan.clone()
-        a_scan[..., offset:, :] = a_prev[..., offset:, :] * a_prev[..., :-offset, :]
-        b_scan[..., offset:, :] = b_prev[..., offset:, :] + a_prev[..., offset:, :] * b_prev[..., :-offset, :]
-        offset <<= 1
-
-    filtered = b_scan
-    if init is not None:
-        filtered = filtered + a_scan * init.unsqueeze(-2)
+    if needs_checkpoint:
+        filtered = checkpoint(
+            _parallel_prefix_scan_core,
+            x,
+            lambdas_cast,
+            init,
+            use_reentrant=False,
+        )
+    else:
+        filtered = _parallel_prefix_scan_core(x, lambdas_cast, init)
 
     return filtered.movedim(-2, normalized_time_dim)
 

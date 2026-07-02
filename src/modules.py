@@ -45,6 +45,15 @@ class C2FAB_Heads(nn.Module):
         # Zero-init keeps injected bias as a no-op at step zero.
         self.alphas = nn.Parameter(torch.zeros(num_layers, num_q_heads))
 
+    @staticmethod
+    def _run_iir_with_optional_checkpoint(
+        charges: torch.Tensor,
+        lambdas: torch.Tensor,
+    ) -> torch.Tensor:
+        # causal_iir_filter_parallel applies internal checkpointing when
+        # gradients are enabled, so callers can use a single path.
+        return causal_iir_filter_parallel(charges, lambdas, time_dim=1)
+
     def forward(
         self,
         x_u: torch.Tensor,
@@ -76,45 +85,52 @@ class C2FAB_Heads(nn.Module):
             )
 
         C_u = self.charge_mlp(x_u)  # C_u:[batch_size, seq_len, D]
-        lambdas_fast = self.lambdas_fast.clamp(min=1.0e-4, max=1.0 - 1.0e-4)
-        lambdas_slow = self.lambdas_slow.clamp(min=1.0e-4, max=1.0 - 1.0e-4)
+        # Keep recurrent field accumulation in float32 for long-range stability.
+        if C_u.dtype in (torch.float16, torch.bfloat16):
+            C_u = C_u.float()
+        lambdas_fast = self.lambdas_fast.clamp(min=1.0e-4, max=1.0 - 1.0e-4).to(
+            device=C_u.device,
+            dtype=C_u.dtype,
+        )
+        lambdas_slow = self.lambdas_slow.clamp(min=1.0e-4, max=1.0 - 1.0e-4).to(
+            device=C_u.device,
+            dtype=C_u.dtype,
+        )
 
-        Phi_fwd_fast = causal_iir_filter_parallel(
+        Phi_fwd_fast = self._run_iir_with_optional_checkpoint(
             C_u,
             lambdas_fast,
-            time_dim=1,
         )  # [batch_size, seq_len, D]
-        Phi_fwd_slow = causal_iir_filter_parallel(
+        Phi_fwd_slow = self._run_iir_with_optional_checkpoint(
             C_u,
             lambdas_slow,
-            time_dim=1,
         )  # [batch_size, seq_len, D]
 
         if use_bidirectional:
             C_u_reversed = torch.flip(C_u, dims=[1])
 
-            Phi_bwd_fast = causal_iir_filter_parallel(
+            Phi_bwd_fast = self._run_iir_with_optional_checkpoint(
                 C_u_reversed,
                 lambdas_fast,
-                time_dim=1,
             )
             Phi_bwd_fast = torch.flip(Phi_bwd_fast, dims=[1])
 
-            Phi_bwd_slow = causal_iir_filter_parallel(
+            Phi_bwd_slow = self._run_iir_with_optional_checkpoint(
                 C_u_reversed,
                 lambdas_slow,
-                time_dim=1,
             )
             Phi_bwd_slow = torch.flip(Phi_bwd_slow, dims=[1])
 
-            Phi_fast = Phi_fwd_fast + Phi_bwd_fast
-            Phi_slow = Phi_fwd_slow + Phi_bwd_slow
+            # Avoid counting the current token charge twice:
+            # both directional passes include C_t at timestep t.
+            Phi_fast = Phi_fwd_fast + Phi_bwd_fast - C_u
+            Phi_slow = Phi_fwd_slow + Phi_bwd_slow - C_u
         else:
             Phi_fast = Phi_fwd_fast
             Phi_slow = Phi_fwd_slow
 
         Phi_total = torch.cat([Phi_fast, Phi_slow], dim=-1)  # [batch_size, seq_len, 2*D]
-        R_q = self.receptor_mlp(x_q)  # [batch_size, query_len, 2*D]
+        R_q = self.receptor_mlp(x_q).to(dtype=Phi_total.dtype)  # [batch_size, query_len, 2*D]
 
         return Phi_total, R_q, C_u
 
