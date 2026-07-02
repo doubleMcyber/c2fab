@@ -70,7 +70,8 @@ def train_phase3(steps: int = 50) -> None:
     model.eval()
 
     heads = C2FAB_Heads(hidden_dim=4096, D=8, num_layers=4, num_q_heads=32).to(device)
-    optimizer = AdamW(heads.parameters(), lr=1e-3)
+    heads.alphas.requires_grad_(False)
+    optimizer = AdamW([p for p in heads.parameters() if p.requires_grad], lr=1e-3)
 
     print(f"Starting Phase 3 training on device={device} for {steps} steps.")
     for step in range(1, steps + 1):
@@ -92,7 +93,8 @@ def train_phase3(steps: int = 50) -> None:
                 output_hidden_states=True,
                 use_cache=False,
             )
-        layer_22_states = outputs.hidden_states[22].detach()  # [1, full_len, hidden_dim]
+        layer_idx = min(22, len(outputs.hidden_states) - 1)
+        layer_22_states = outputs.hidden_states[layer_idx].detach()  # [1, full_len, hidden_dim]
 
         context_len = input_ids.shape[0]
         query_len = query_ids.shape[0]
